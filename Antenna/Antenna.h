@@ -92,6 +92,11 @@
  */
 - (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
 
+/**
+ 
+ */
+- (BOOL)channelExists:(NSString *)name;
+
 ///==============
 /// @name Logging
 ///==============

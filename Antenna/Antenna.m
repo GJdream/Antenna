@@ -130,14 +130,49 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #endif
 
 - (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
-    [self.channels addObject:channel];
+
+    /**
+     * Has this channel already been added?
+     */
+    if ([self channelExists:name]) {
+      return;
+    }
+
+    NSDictionary *channelDict = @{@"channel": channel, @"name" : name};
+  
+    [self.channels addObject:channelDict];
 }
 
 - (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
   
-  if ([self.channels containsObject:channel]) {
-    [self.channels removeObject:channel];
+    /**
+     * Has this channel already been removed?
+     */
+    if (![self channelExists:name]) {
+      return;
+    }
+  
+    NSUInteger index = [self.channels indexOfObjectPassingTest:^BOOL (NSDictionary *channelDict, NSUInteger idx, BOOL *stop) {
+      return [channel[@"name"] isEqualToString:name];
+    }];
+    
+    if (index != NSNotFound) {
+      [self.channels removeObjectAtIndex:index];
+    }
+}
+
+- (BOOL)channelExists:(NSString *)name {
+  
+  NSArray *existingChannels = self.channels;
+  NSPredicate *filter = [NSPredicate predicateWithFormat:@"name = %@", name];
+
+  NSArray *filteredChannels = [existingChannels filteredArrayUsingPredicate:filter];
+  
+  if ([filteredChannels count] > 0) {
+    return YES;
   }
+  
+  return NO;
 }
 
 #pragma mark -
