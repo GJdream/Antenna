@@ -25,6 +25,11 @@
 extern NSString * const AntennaChannelAddedNotification;
 extern NSString * const AntennaChannelRemovedNotification;
 
+extern NSString * const AntennaDictionaryChannelObjectKey;
+extern NSString * const AntennaDictionaryChannelNameKey;
+
+extern NSString * const AntennaChannelNotificationDictKey;
+
 @protocol AntennaChannel;
 
 /**
@@ -93,7 +98,7 @@ extern NSString * const AntennaChannelRemovedNotification;
 /**
  
  */
-- (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
+- (void)removeChannelForName:(NSString *)name;
 
 /**
  

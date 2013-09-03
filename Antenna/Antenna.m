@@ -30,6 +30,12 @@
 NSString * const AntennaChannelAddedNotification   = @"AntennaChannelAddedNotification";
 NSString * const AntennaChannelRemovedNotification = @"AntennaChannelRemovedNotification";
 
+NSString * const AntennaChannelNotificationDictKey = @"channelName";
+
+NSString * const AntennaDictionaryChannelObjectKey = @"channel";
+NSString * const AntennaDictionaryChannelNameKey   = @"name";
+
+
 static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
     NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
     [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -141,8 +147,8 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
 
-    NSDictionary *channelDict = @{@"channel": channel, @"name" : name};
-    NSDictionary *notifInfo   = @{@"channelName": name};
+    NSDictionary *channelDict = @{AntennaDictionaryChannelObjectKey: channel, AntennaDictionaryChannelNameKey : name};
+    NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey: name};
   
     [self.channels addObject:channelDict];
   
@@ -151,7 +157,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
                                                       userInfo:notifInfo];
 }
 
-- (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
+- (void)removeChannelForName:(NSString *)name {
   
     /**
      * Has this channel already been removed?
@@ -161,12 +167,12 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }
   
     NSUInteger index = [self.channels indexOfObjectPassingTest:^BOOL (NSDictionary *channelDict, NSUInteger idx, BOOL *stop) {
-      return [channel[@"name"] isEqualToString:name];
+      return [channelDict[@"name"] isEqualToString:name];
     }];
     
     if (index != NSNotFound) {
       
-      NSDictionary *notifInfo   = @{@"channelName": name};
+      NSDictionary *notifInfo = @{@"channelName": name};
       
       [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
                                                           object:nil
