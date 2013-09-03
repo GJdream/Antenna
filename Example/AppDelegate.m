@@ -21,22 +21,14 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
-
 #import "ViewController.h"
-
 #import "Antenna.h"
-
-@interface AppDelegate()
-- (void)testNotification:(NSNotification *)aNotif;
-@end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(testNotification:) name:AntennaChannelAddedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(testNotification:) name:AntennaChannelRemovedNotification object:nil];
     [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG" forName:@"defaultLog"];
     [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Antenna sharedLogger] startLoggingNotificationName:AntennaExampleNotification];
@@ -52,11 +44,5 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 - (void)applicationWillResignActive:(UIApplication *)application {
     [[Antenna sharedLogger] removeChannelForName:@"defaultLog"];
 }
-
-- (void)testNotification:(NSNotification *)aNotif {
-  NSLog(@"aNotification: %@", aNotif);
-}
-
-
 
 @end
