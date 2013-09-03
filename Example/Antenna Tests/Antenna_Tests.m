@@ -53,7 +53,7 @@ static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleN
 }
 
 - (void)test_001_Successfully_Remove_Channel {
-  [[Antenna sharedLogger] removeChannelForName:@"defaultTestLog"];
+    [[Antenna sharedLogger] removeChannelForName:@"defaultTestLog"];
 }
 
 #pragma mark - Notification Handlers
