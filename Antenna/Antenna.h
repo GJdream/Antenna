@@ -84,6 +84,11 @@
  */
 - (void)addChannel:(id <AntennaChannel>)channel;
 
+/**
+ 
+ */
+- (void)removeChannel:(id <AntennaChannel>)channel;
+
 ///==============
 /// @name Logging
 ///==============

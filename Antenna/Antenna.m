@@ -57,7 +57,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 @interface Antenna ()
-@property (readwrite, nonatomic, strong) NSArray *channels;
+@property (readwrite, nonatomic, strong) NSMutableArray *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @end
@@ -83,7 +83,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
         return nil;
     }
 
-    self.channels = [NSArray array];
+    self.channels = [NSMutableArray new];
 
     self.defaultPayload = [NSMutableDictionary dictionary];
 
@@ -128,7 +128,14 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #endif
 
 - (void)addChannel:(id <AntennaChannel>)channel {
-    self.channels = [self.channels arrayByAddingObject:channel];
+    [self.channels addObject:channel];
+}
+
+- (void)removeChannel:(id <AntennaChannel>)channel {
+  
+  if ([self.channels containsObject:channel]) {
+    [self.channels removeObject:channel];
+  }
 }
 
 #pragma mark -
