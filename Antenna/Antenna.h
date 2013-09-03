@@ -105,6 +105,11 @@ extern NSString * const AntennaChannelNotificationDictKey;
  */
 - (BOOL)channelExists:(NSString *)name;
 
+/**
+ 
+ */
+- (id <AntennaChannel>)channelForName:(NSString *)name;
+
 ///==============
 /// @name Logging
 ///==============

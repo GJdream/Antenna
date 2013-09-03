@@ -147,8 +147,8 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
 
-    NSDictionary *channelDict = @{AntennaDictionaryChannelObjectKey: channel, AntennaDictionaryChannelNameKey : name};
-    NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey: name};
+    NSDictionary *channelDict = @{AntennaDictionaryChannelObjectKey : channel, AntennaDictionaryChannelNameKey : name};
+    NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey : name};
   
     [self.channels addObject:channelDict];
   
@@ -184,16 +184,25 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 - (BOOL)channelExists:(NSString *)name {
   
-  NSArray *existingChannels = self.channels;
-  NSPredicate *filter = [NSPredicate predicateWithFormat:@"name = %@", name];
-
-  NSArray *filteredChannels = [existingChannels filteredArrayUsingPredicate:filter];
-  
-  if ([filteredChannels count] > 0) {
+  if ([self channelForName:name]) {
     return YES;
   }
   
   return NO;
+}
+
+- (id <AntennaChannel>)channelForName:(NSString *)name {
+
+  NSArray *existingChannels = self.channels;
+  NSPredicate *filter = [NSPredicate predicateWithFormat:@"name = %@", name];
+  
+  NSArray *filteredChannels = [existingChannels filteredArrayUsingPredicate:filter];
+  
+  /**
+   * Channel names should be unique so we'll just grab first object
+   */
+  
+  return [filteredChannels firstObject];
 }
 
 #pragma mark -
