@@ -62,7 +62,7 @@ static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleN
 
   NSString *channelName = [aNotif userInfo][AntennaChannelNotificationDictKey];
   
-  STAssertNotNil(channelName, @"Notification name can't be nil");
+  STAssertNotNil(channelName, @"Channel name can't be nil");
 }
 
 - (void)channelWasRemovedNotification:(NSNotification *)aNotif {

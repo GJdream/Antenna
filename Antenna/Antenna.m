@@ -167,18 +167,18 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }
   
     NSUInteger index = [self.channels indexOfObjectPassingTest:^BOOL (NSDictionary *channelDict, NSUInteger idx, BOOL *stop) {
-      return [channelDict[@"name"] isEqualToString:name];
+      return [channelDict[AntennaDictionaryChannelNameKey] isEqualToString:name];
     }];
     
     if (index != NSNotFound) {
       
-      NSDictionary *notifInfo = @{@"channelName": name};
+      NSDictionary *notifInfo = @{AntennaChannelNotificationDictKey : name};
+      
+      [self.channels removeObjectAtIndex:index];
       
       [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
                                                           object:nil
                                                         userInfo:notifInfo];
-      
-      [self.channels removeObjectAtIndex:index];
     }
 }
 
@@ -201,8 +201,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   /**
    * Channel names should be unique so we'll just grab first object
    */
+  id <AntennaChannel> channelObject = [filteredChannels firstObject];
   
-  return [filteredChannels firstObject];
+  return channelObject;
 }
 
 #pragma mark -
