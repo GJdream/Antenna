@@ -21,9 +21,7 @@
 // THE SOFTWARE.
 
 #import "AppDelegate.h"
-
 #import "ViewController.h"
-
 #import "Antenna.h"
 
 @implementation AppDelegate
@@ -31,7 +29,7 @@
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG"];
+    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG" forName:@"defaultLog"];
     [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Antenna sharedLogger] startLoggingNotificationName:AntennaExampleNotification];
 
@@ -41,6 +39,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     [self.window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [[Antenna sharedLogger] removeChannelForName:@"defaultLog"];
 }
 
 @end

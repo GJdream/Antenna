@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01A6E1E717D6633C0029E623 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01A6E1E617D6633C0029E623 /* SenTestingKit.framework */; };
+		01A6E1E817D6633C0029E623 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */; };
+		01A6E1E917D6633C0029E623 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */; };
+		01A6E1EF17D6633C0029E623 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01A6E1ED17D6633C0029E623 /* InfoPlist.strings */; };
+		01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A6E1F017D6633C0029E623 /* Antenna_Tests.m */; };
+		01A6E1F917D6642E0029E623 /* Antenna.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECE116CA76B800CB3328 /* Antenna.m */; };
 		F83F36D01728628A00FB13E3 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F83F36BE1728628A00FB13E3 /* AFHTTPClient.m */; };
 		F83F36D11728628A00FB13E3 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F83F36C01728628A00FB13E3 /* AFHTTPRequestOperation.m */; };
 		F83F36D21728628A00FB13E3 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F83F36C21728628A00FB13E3 /* AFImageRequestOperation.m */; };
@@ -33,7 +39,23 @@
 		F8B5ECE216CA76B800CB3328 /* Antenna.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECE116CA76B800CB3328 /* Antenna.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		01A6E1F317D6633C0029E623 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8B5ECAF16CA75EB00CB3328 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8B5ECB616CA75EB00CB3328;
+			remoteInfo = Antenna;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		01A6E1E517D6633C0029E623 /* Antenna Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Antenna Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01A6E1E617D6633C0029E623 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		01A6E1EC17D6633C0029E623 /* Antenna Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Antenna Tests-Info.plist"; sourceTree = "<group>"; };
+		01A6E1EE17D6633C0029E623 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		01A6E1F017D6633C0029E623 /* Antenna_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Antenna_Tests.m; sourceTree = "<group>"; };
+		01A6E1F217D6633C0029E623 /* Antenna Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Antenna Tests-Prefix.pch"; sourceTree = "<group>"; };
 		F83F36BD1728628A00FB13E3 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		F83F36BE1728628A00FB13E3 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		F83F36BF1728628A00FB13E3 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -77,6 +99,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		01A6E1E217D6633C0029E623 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A6E1E717D6633C0029E623 /* SenTestingKit.framework in Frameworks */,
+				01A6E1E917D6633C0029E623 /* UIKit.framework in Frameworks */,
+				01A6E1E817D6633C0029E623 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8B5ECB416CA75EB00CB3328 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -93,6 +125,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01A6E1EA17D6633C0029E623 /* Antenna Tests */ = {
+			isa = PBXGroup;
+			children = (
+				01A6E1F017D6633C0029E623 /* Antenna_Tests.m */,
+				01A6E1EB17D6633C0029E623 /* Supporting Files */,
+			);
+			path = "Antenna Tests";
+			sourceTree = "<group>";
+		};
+		01A6E1EB17D6633C0029E623 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				01A6E1EC17D6633C0029E623 /* Antenna Tests-Info.plist */,
+				01A6E1ED17D6633C0029E623 /* InfoPlist.strings */,
+				01A6E1F217D6633C0029E623 /* Antenna Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F83F36BC1728628A00FB13E3 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				F8B5ECC016CA75EB00CB3328 /* Antenna */,
+				01A6E1EA17D6633C0029E623 /* Antenna Tests */,
 				F8B5ECB916CA75EB00CB3328 /* Frameworks */,
 				F8B5ECB816CA75EB00CB3328 /* Products */,
 				F8B5ECE316CA76D600CB3328 /* Vendor */,
@@ -134,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				F8B5ECB716CA75EB00CB3328 /* Antenna.app */,
+				01A6E1E517D6633C0029E623 /* Antenna Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,6 +200,7 @@
 				F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */,
 				F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */,
 				F8B5ECBE16CA75EB00CB3328 /* CoreGraphics.framework */,
+				01A6E1E617D6633C0029E623 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -199,6 +253,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		01A6E1E417D6633C0029E623 /* Antenna Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01A6E1F717D6633C0029E623 /* Build configuration list for PBXNativeTarget "Antenna Tests" */;
+			buildPhases = (
+				01A6E1E117D6633C0029E623 /* Sources */,
+				01A6E1E217D6633C0029E623 /* Frameworks */,
+				01A6E1E317D6633C0029E623 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01A6E1F417D6633C0029E623 /* PBXTargetDependency */,
+			);
+			name = "Antenna Tests";
+			productName = "Antenna Tests";
+			productReference = 01A6E1E517D6633C0029E623 /* Antenna Tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		F8B5ECB616CA75EB00CB3328 /* Antenna */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F8B5ECDA16CA75EB00CB3328 /* Build configuration list for PBXNativeTarget "Antenna" */;
@@ -224,6 +296,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Mattt Thompson";
+				TargetAttributes = {
+					01A6E1E417D6633C0029E623 = {
+						TestTargetID = F8B5ECB616CA75EB00CB3328;
+					};
+				};
 			};
 			buildConfigurationList = F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Antenna Example" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -238,11 +315,20 @@
 			projectRoot = "";
 			targets = (
 				F8B5ECB616CA75EB00CB3328 /* Antenna */,
+				01A6E1E417D6633C0029E623 /* Antenna Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		01A6E1E317D6633C0029E623 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A6E1EF17D6633C0029E623 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8B5ECB516CA75EB00CB3328 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -258,6 +344,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		01A6E1E117D6633C0029E623 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A6E1F917D6642E0029E623 /* Antenna.m in Sources */,
+				01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F8B5ECB316CA75EB00CB3328 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -280,7 +375,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		01A6E1F417D6633C0029E623 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8B5ECB616CA75EB00CB3328 /* Antenna */;
+			targetProxy = 01A6E1F317D6633C0029E623 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		01A6E1ED17D6633C0029E623 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01A6E1EE17D6633C0029E623 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		F8B5ECC316CA75EB00CB3328 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -300,6 +411,63 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		01A6E1F517D6633C0029E623 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Antenna.app/Antenna";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Antenna Tests/Antenna Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Antenna Tests/Antenna Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		01A6E1F617D6633C0029E623 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Antenna.app/Antenna";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Antenna Tests/Antenna Tests-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Antenna Tests/Antenna Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		F8B5ECD816CA75EB00CB3328 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -381,6 +549,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		01A6E1F717D6633C0029E623 /* Build configuration list for PBXNativeTarget "Antenna Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01A6E1F517D6633C0029E623 /* Debug */,
+				01A6E1F617D6633C0029E623 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Antenna Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

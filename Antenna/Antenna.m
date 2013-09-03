@@ -27,6 +27,15 @@
 
 #import <CoreData/CoreData.h>
 
+NSString * const AntennaChannelAddedNotification   = @"AntennaChannelAddedNotification";
+NSString * const AntennaChannelRemovedNotification = @"AntennaChannelRemovedNotification";
+
+NSString * const AntennaChannelNotificationDictKey = @"channelName";
+
+NSString * const AntennaDictionaryChannelObjectKey = @"channel";
+NSString * const AntennaDictionaryChannelNameKey   = @"name";
+
+
 static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
     NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
     [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -57,7 +66,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 @interface Antenna ()
-@property (readwrite, nonatomic, strong) NSArray *channels;
+@property (readwrite, nonatomic, strong) NSMutableArray *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @end
@@ -83,7 +92,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
         return nil;
     }
 
-    self.channels = [NSArray array];
+    self.channels = [NSMutableArray new];
 
     self.defaultPayload = [NSMutableDictionary dictionary];
 
@@ -100,20 +109,21 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-- (void)addChannelWithFilePath:(NSString *)path {
-    [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES]];
+- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name {
+    [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES] forName:name];
 }
 
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream {
+- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream forName:(NSString *)name {
     AntennaStreamChannel *channel = [[AntennaStreamChannel alloc] initWithOutputStream:outputStream];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 
 - (void)addChannelWithURL:(NSURL *)URL
                    method:(NSString *)method
+                  forName:(NSString *)name
 {
     AntennaHTTPChannel *channel = [[AntennaHTTPChannel alloc] initWithURL:URL method:method];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 
 #ifdef _COREDATADEFINES_H
@@ -121,14 +131,79 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
             messageAttribute:(NSAttributeDescription *)messageAttribute
           timestampAttribute:(NSAttributeDescription *)timestampAttribute
       inManagedObjectContext:(NSManagedObjectContext *)context
+                     forName:(NSString *)name
 {
     AntennaCoreDataChannel *channel = [[AntennaCoreDataChannel alloc] initWithEntity:entity messageAttribute:messageAttribute timestampAttribute:timestampAttribute inManagedObjectContext:context];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 #endif
 
-- (void)addChannel:(id <AntennaChannel>)channel {
-    self.channels = [self.channels arrayByAddingObject:channel];
+- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
+
+    /**
+     * Has this channel already been added?
+     */
+    if ([self channelExists:name]) {
+      return;
+    }
+
+    NSDictionary *channelDict = @{AntennaDictionaryChannelObjectKey : channel, AntennaDictionaryChannelNameKey : name};
+    NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey : name};
+  
+    [self.channels addObject:channelDict];
+  
+    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelAddedNotification
+                                                        object:nil
+                                                      userInfo:notifInfo];
+}
+
+- (void)removeChannelForName:(NSString *)name {
+  
+    /**
+     * Has this channel already been removed?
+     */
+    if (![self channelExists:name]) {
+      return;
+    }
+  
+    NSUInteger index = [self.channels indexOfObjectPassingTest:^BOOL (NSDictionary *channelDict, NSUInteger idx, BOOL *stop) {
+      return [channelDict[AntennaDictionaryChannelNameKey] isEqualToString:name];
+    }];
+    
+    if (index != NSNotFound) {
+      
+      NSDictionary *notifInfo = @{AntennaChannelNotificationDictKey : name};
+      
+      [self.channels removeObjectAtIndex:index];
+      
+      [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
+                                                          object:nil
+                                                        userInfo:notifInfo];
+    }
+}
+
+- (BOOL)channelExists:(NSString *)name {
+  
+  if ([self channelForName:name]) {
+    return YES;
+  }
+  
+  return NO;
+}
+
+- (id <AntennaChannel>)channelForName:(NSString *)name {
+
+  NSArray *existingChannels = self.channels;
+  NSPredicate *filter = [NSPredicate predicateWithFormat:@"name = %@", name];
+  
+  NSArray *filteredChannels = [existingChannels filteredArrayUsingPredicate:filter];
+  
+  /**
+   * Channel names should be unique so we'll just grab first object
+   */
+  id <AntennaChannel> channelObject = [filteredChannels firstObject];
+  
+  return channelObject;
 }
 
 #pragma mark -
@@ -148,7 +223,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }];
 
     [self.channels enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id channel, NSUInteger idx, BOOL *stop) {
-        [channel log:mutablePayload];
+        [channel[@"channel"] log:mutablePayload];
     }];
 }
 

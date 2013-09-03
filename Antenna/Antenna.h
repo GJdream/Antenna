@@ -22,6 +22,14 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const AntennaChannelAddedNotification;
+extern NSString * const AntennaChannelRemovedNotification;
+
+extern NSString * const AntennaDictionaryChannelObjectKey;
+extern NSString * const AntennaDictionaryChannelNameKey;
+
+extern NSString * const AntennaChannelNotificationDictKey;
+
 @protocol AntennaChannel;
 
 /**
@@ -56,18 +64,20 @@
 /**
  
  */
-- (void)addChannelWithFilePath:(NSString *)path;
+- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name;
 
 /**
 
  */
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream;
+- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream
+                           forName:(NSString *)name;
 
 /**
  
  */
 - (void)addChannelWithURL:(NSURL *)URL
-                   method:(NSString *)method;
+                   method:(NSString *)method
+                  forName:(NSString *)name;
 
 /**
  
@@ -76,13 +86,29 @@
 - (void)addChannelWithEntity:(NSEntityDescription *)entity
             messageAttribute:(NSAttributeDescription *)messageAttribute
           timestampAttribute:(NSAttributeDescription *)timestampAttribute
-      inManagedObjectContext:(NSManagedObjectContext *)context;
+      inManagedObjectContext:(NSManagedObjectContext *)context
+                     forName:(NSString *)name;
 #endif
 
 /**
  
  */
-- (void)addChannel:(id <AntennaChannel>)channel;
+- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
+
+/**
+ 
+ */
+- (void)removeChannelForName:(NSString *)name;
+
+/**
+ 
+ */
+- (BOOL)channelExists:(NSString *)name;
+
+/**
+ 
+ */
+- (id <AntennaChannel>)channelForName:(NSString *)name;
 
 ///==============
 /// @name Logging
