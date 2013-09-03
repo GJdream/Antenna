@@ -22,6 +22,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const AntennaChannelAddedNotification;
+extern NSString * const AntennaChannelRemovedNotification;
+
 @protocol AntennaChannel;
 
 /**

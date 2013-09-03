@@ -27,6 +27,9 @@
 
 #import <CoreData/CoreData.h>
 
+NSString * const AntennaChannelAddedNotification   = @"AntennaChannelAddedNotification";
+NSString * const AntennaChannelRemovedNotification = @"AntennaChannelRemovedNotification";
+
 static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
     NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
     [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -139,8 +142,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }
 
     NSDictionary *channelDict = @{@"channel": channel, @"name" : name};
+    NSDictionary *notifInfo   = @{@"channelName": name};
   
     [self.channels addObject:channelDict];
+  
+    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelAddedNotification
+                                                        object:nil
+                                                      userInfo:notifInfo];
 }
 
 - (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
@@ -157,6 +165,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }];
     
     if (index != NSNotFound) {
+      
+      NSDictionary *notifInfo   = @{@"channelName": name};
+      
+      [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
+                                                          object:nil
+                                                        userInfo:notifInfo];
+      
       [self.channels removeObjectAtIndex:index];
     }
 }
@@ -192,7 +207,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     }];
 
     [self.channels enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id channel, NSUInteger idx, BOOL *stop) {
-        [channel log:mutablePayload];
+        [channel[@"channel"] log:mutablePayload];
     }];
 }
 

@@ -26,12 +26,17 @@
 
 #import "Antenna.h"
 
+@interface AppDelegate()
+- (void)testNotification:(NSNotification *)aNotif;
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(testNotification:) name:AntennaChannelAddedNotification object:nil];
+    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG" forName:@"defaultLog"];
     [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Antenna sharedLogger] startLoggingNotificationName:AntennaExampleNotification];
 
@@ -41,6 +46,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     [self.window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void)testNotification:(NSNotification *)aNotif {
+  NSLog(@"aNotification: %@", aNotif);
 }
 
 @end
