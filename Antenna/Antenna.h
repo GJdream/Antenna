@@ -56,18 +56,20 @@
 /**
  
  */
-- (void)addChannelWithFilePath:(NSString *)path;
+- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name;
 
 /**
 
  */
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream;
+- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream
+                           forName:(NSString *)name;
 
 /**
  
  */
 - (void)addChannelWithURL:(NSURL *)URL
-                   method:(NSString *)method;
+                   method:(NSString *)method
+                  forName:(NSString *)name;
 
 /**
  
@@ -76,18 +78,19 @@
 - (void)addChannelWithEntity:(NSEntityDescription *)entity
             messageAttribute:(NSAttributeDescription *)messageAttribute
           timestampAttribute:(NSAttributeDescription *)timestampAttribute
-      inManagedObjectContext:(NSManagedObjectContext *)context;
+      inManagedObjectContext:(NSManagedObjectContext *)context
+                     forName:(NSString *)name;
 #endif
 
 /**
  
  */
-- (void)addChannel:(id <AntennaChannel>)channel;
+- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
 
 /**
  
  */
-- (void)removeChannel:(id <AntennaChannel>)channel;
+- (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
 
 ///==============
 /// @name Logging

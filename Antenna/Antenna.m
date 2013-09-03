@@ -100,20 +100,21 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-- (void)addChannelWithFilePath:(NSString *)path {
-    [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES]];
+- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name {
+    [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES] forName:name];
 }
 
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream {
+- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream forName:(NSString *)name {
     AntennaStreamChannel *channel = [[AntennaStreamChannel alloc] initWithOutputStream:outputStream];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 
 - (void)addChannelWithURL:(NSURL *)URL
                    method:(NSString *)method
+                  forName:(NSString *)name
 {
     AntennaHTTPChannel *channel = [[AntennaHTTPChannel alloc] initWithURL:URL method:method];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 
 #ifdef _COREDATADEFINES_H
@@ -121,17 +122,18 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
             messageAttribute:(NSAttributeDescription *)messageAttribute
           timestampAttribute:(NSAttributeDescription *)timestampAttribute
       inManagedObjectContext:(NSManagedObjectContext *)context
+                     forName:(NSString *)name
 {
     AntennaCoreDataChannel *channel = [[AntennaCoreDataChannel alloc] initWithEntity:entity messageAttribute:messageAttribute timestampAttribute:timestampAttribute inManagedObjectContext:context];
-    [self addChannel:channel];
+    [self addChannel:channel forName:name];
 }
 #endif
 
-- (void)addChannel:(id <AntennaChannel>)channel {
+- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
     [self.channels addObject:channel];
 }
 
-- (void)removeChannel:(id <AntennaChannel>)channel {
+- (void)removeChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
   
   if ([self.channels containsObject:channel]) {
     [self.channels removeObject:channel];
