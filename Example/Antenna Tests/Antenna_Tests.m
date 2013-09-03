@@ -49,11 +49,11 @@ static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleN
   
     [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"]
                                        method:@"LOG"
-                                      forName:@"defaultLog"];
+                                      forName:@"defaultTestLog"];
 }
 
 - (void)test_001_Successfully_Remove_Channel {
-  [[Antenna sharedLogger] removeChannelForName:@"defaultLog"];
+  [[Antenna sharedLogger] removeChannelForName:@"defaultTestLog"];
 }
 
 #pragma mark - Notification Handlers
