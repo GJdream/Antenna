@@ -27,14 +27,14 @@
 
 #import <CoreData/CoreData.h>
 
+static char const *channelsThreadQueueName = "me.mattt.antenna.channels.queue";
+
+static dispatch_queue_t _channelsThreadQueue;
+
 NSString * const AntennaChannelAddedNotification   = @"AntennaChannelAddedNotification";
 NSString * const AntennaChannelRemovedNotification = @"AntennaChannelRemovedNotification";
 
 NSString * const AntennaChannelNotificationDictKey = @"channelName";
-
-NSString * const AntennaDictionaryChannelObjectKey = @"channel";
-NSString * const AntennaDictionaryChannelNameKey   = @"name";
-
 
 static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
     NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
@@ -66,7 +66,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 @interface Antenna ()
-@property (readwrite, nonatomic, strong) NSMutableArray *channels;
+@property (readwrite, nonatomic, strong) NSMutableDictionary *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @end
@@ -75,6 +75,10 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 @synthesize channels = _channels;
 @synthesize defaultPayload = _defaultPayload;
 @synthesize notificationCenter = _notificationCenter;
+
++ (void)initialize {
+  _channelsThreadQueue = dispatch_queue_create(channelsThreadQueueName, DISPATCH_QUEUE_CONCURRENT);
+}
 
 + (instancetype)sharedLogger {
     static id _sharedAntenna = nil;
@@ -92,7 +96,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
         return nil;
     }
 
-    self.channels = [NSMutableArray new];
+    self.channels = [NSMutableDictionary new];
 
     self.defaultPayload = [NSMutableDictionary dictionary];
 
@@ -105,6 +109,24 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     self.operationQueue = [[NSOperationQueue alloc] init];
 
     return self;
+}
+
+- (void)setChannels:(NSMutableDictionary *)channels {
+  
+  dispatch_barrier_async(_channelsThreadQueue, ^{
+      _channels = channels;
+  });
+}
+
+- (NSMutableDictionary *)channels {
+
+  __block NSMutableDictionary *__channels;
+  
+  dispatch_sync(_channelsThreadQueue, ^{
+    __channels = _channels;
+  });
+  
+  return __channels;
 }
 
 #pragma mark -
@@ -147,10 +169,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
 
-    NSDictionary *channelDict = @{AntennaDictionaryChannelObjectKey : channel, AntennaDictionaryChannelNameKey : name};
     NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey : name};
   
-    [self.channels addObject:channelDict];
+    self.channels[name] = channel;
   
     [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelAddedNotification
                                                         object:nil
@@ -166,20 +187,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
   
-    NSUInteger index = [self.channels indexOfObjectPassingTest:^BOOL (NSDictionary *channelDict, NSUInteger idx, BOOL *stop) {
-      return [channelDict[AntennaDictionaryChannelNameKey] isEqualToString:name];
-    }];
-    
-    if (index != NSNotFound) {
-      
-      NSDictionary *notifInfo = @{AntennaChannelNotificationDictKey : name};
-      
-      [self.channels removeObjectAtIndex:index];
-      
-      [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
-                                                          object:nil
-                                                        userInfo:notifInfo];
-    }
+    [self.channels removeObjectForKey:name];
+  
+    NSDictionary *notifInfo = @{AntennaChannelNotificationDictKey : name};
+  
+    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
+                                                        object:nil
+                                                      userInfo:notifInfo];
 }
 
 - (BOOL)channelExists:(NSString *)name {
@@ -193,15 +207,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 - (id <AntennaChannel>)channelForName:(NSString *)name {
 
-  NSArray *existingChannels = self.channels;
-  NSPredicate *filter = [NSPredicate predicateWithFormat:@"name = %@", name];
-  
-  NSArray *filteredChannels = [existingChannels filteredArrayUsingPredicate:filter];
-  
-  /**
-   * Channel names should be unique so we'll just grab first object
-   */
-  id <AntennaChannel> channelObject = [filteredChannels firstObject];
+  id <AntennaChannel> channelObject = self.channels[name];
   
   return channelObject;
 }
@@ -221,9 +227,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
             [mutablePayload setObject:obj forKey:key];
         }
     }];
-
-    [self.channels enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id channel, NSUInteger idx, BOOL *stop) {
-        [channel[@"channel"] log:mutablePayload];
+  
+    [self.channels enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+      [obj log:mutablePayload];
     }];
 }
 
