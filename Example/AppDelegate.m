@@ -29,7 +29,8 @@
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"] method:@"LOG" forName:@"defaultLog"];
+//    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"LOG" forName:@"defaultLog"];
+    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"defaultLog"];
     [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Antenna sharedLogger] startLoggingNotificationName:AntennaExampleNotification];
 
