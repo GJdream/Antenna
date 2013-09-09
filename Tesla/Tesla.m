@@ -21,25 +21,27 @@
 // THE SOFTWARE.
 
 #import "Tesla.h"
-
 #import <CoreData/CoreData.h>
 
-static char const *channelsThreadQueueName = "me.mattt.antenna.channels.queue";
+typedef NSDictionary *(^TeslaPayloadConstructionBlock)(NSNotification *notification);
+
+static char const *channelsThreadQueueName = "com.theforce.channels.queue";
 
 static dispatch_queue_t _channelsThreadQueue;
 
 NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotification";
 NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
-
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
 
 static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
-    NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
-    [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [mutableComponents addObject:[NSString stringWithFormat:@"\"%@\"=\"%@\"", key, obj]];
-    }];
 
-    return [mutableComponents componentsJoinedByString:@" "];
+  NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
+  
+  [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [mutableComponents addObject:[NSString stringWithFormat:@"\"%@\"=\"%@\"", key, obj]];
+  }];
+
+  return [mutableComponents componentsJoinedByString:@" "];
 }
 
 @interface TeslaStreamChannel : NSObject <TeslaChannel>
@@ -52,60 +54,69 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 @end
 
 #ifdef _COREDATADEFINES_H
+
 @interface TeslaCoreDataChannel : NSObject <TeslaChannel>
+
 - (id)initWithEntity:(NSEntityDescription *)entity
     messageAttribute:(NSAttributeDescription *)messageAttribute
   timestampAttribute:(NSAttributeDescription *)timestampAttribute
 inManagedObjectContext:(NSManagedObjectContext *)context;
+
 @end
+
 #endif
 
 #pragma mark -
 
 @interface Tesla ()
+
 @property (readwrite, nonatomic, strong) NSMutableDictionary *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
+
 @end
 
 @implementation Tesla
+
 @synthesize channels = _channels;
-@synthesize defaultPayload = _defaultPayload;
-@synthesize notificationCenter = _notificationCenter;
 
 + (void)initialize {
   _channelsThreadQueue = dispatch_queue_create(channelsThreadQueueName, DISPATCH_QUEUE_CONCURRENT);
 }
 
 + (instancetype)sharedLogger {
-    static id _sharedTesla = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedTesla = [[self alloc] init];
-    });
 
-    return _sharedTesla;
+  static id _sharedTesla = nil;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+      _sharedTesla = [[self alloc] init];
+  });
+
+  return _sharedTesla;
 }
 
 - (id)init {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
 
-    self.channels = [NSMutableDictionary new];
+  self = [super init];
+  
+  if (!self) {
+    return nil;
+  }
 
-    self.defaultPayload = [NSMutableDictionary dictionary];
+  self.channels       = [NSMutableDictionary new];
+  self.defaultPayload = [NSMutableDictionary dictionary];
 
-    if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
-        [self.defaultPayload setValue:[[[UIDevice currentDevice] identifierForVendor] UUIDString] forKey:@"uuid"];
-    }
-    [self.defaultPayload setValue:[[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+  if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
+    [self.defaultPayload setValue:[[[UIDevice currentDevice] identifierForVendor] UUIDString] forKey:@"uuid"];
+  }
 
-    self.notificationCenter = [NSNotificationCenter defaultCenter];
-    self.operationQueue = [[NSOperationQueue alloc] init];
+  [self.defaultPayload setValue:[[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
 
-    return self;
+  self.notificationCenter = [NSNotificationCenter defaultCenter];
+  self.operationQueue     = [[NSOperationQueue alloc] init];
+
+  return self;
 }
 
 - (void)setChannels:(NSMutableDictionary *)channels {
@@ -129,32 +140,41 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 - (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name {
-    [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES] forName:name];
+  [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES] forName:name];
 }
 
 - (void)addChannelWithOutputStream:(NSOutputStream *)outputStream forName:(NSString *)name {
-    TeslaStreamChannel *channel = [[TeslaStreamChannel alloc] initWithOutputStream:outputStream];
-    [self addChannel:channel forName:name];
+
+  TeslaStreamChannel *channel = [[TeslaStreamChannel alloc] initWithOutputStream:outputStream];
+  
+  [self addChannel:channel forName:name];
 }
 
 - (void)addChannelWithURL:(NSURL *)URL
                    method:(NSString *)method
-                  forName:(NSString *)name
-{
-    TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL method:method];
-    [self addChannel:channel forName:name];
+                  forName:(NSString *)name {
+
+  TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL method:method];
+  
+  [self addChannel:channel forName:name];
 }
 
 #ifdef _COREDATADEFINES_H
+
 - (void)addChannelWithEntity:(NSEntityDescription *)entity
             messageAttribute:(NSAttributeDescription *)messageAttribute
           timestampAttribute:(NSAttributeDescription *)timestampAttribute
       inManagedObjectContext:(NSManagedObjectContext *)context
-                     forName:(NSString *)name
-{
-    TeslaCoreDataChannel *channel = [[TeslaCoreDataChannel alloc] initWithEntity:entity messageAttribute:messageAttribute timestampAttribute:timestampAttribute inManagedObjectContext:context];
-    [self addChannel:channel forName:name];
+                     forName:(NSString *)name {
+
+  TeslaCoreDataChannel *channel = [[TeslaCoreDataChannel alloc] initWithEntity:entity
+                                                              messageAttribute:messageAttribute
+                                                            timestampAttribute:timestampAttribute
+                                                        inManagedObjectContext:context];
+  
+  [self addChannel:channel forName:name];
 }
+
 #endif
 
 - (void)addChannel:(id <TeslaChannel>)channel forName:(NSString *)name {
@@ -166,7 +186,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
 
-    NSDictionary *notifInfo   = @{TeslaChannelNotificationDictKey : name};
+    NSDictionary *notifInfo = @{TeslaChannelNotificationDictKey : name};
   
     self.channels[name] = channel;
   
@@ -212,17 +232,23 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 - (void)log:(id)messageOrPayload {
-    NSMutableDictionary *mutablePayload = nil;
-    if ([messageOrPayload isKindOfClass:[NSDictionary class]]) {
-        mutablePayload = [messageOrPayload mutableCopy];
-    } else if (messageOrPayload) {
-        mutablePayload = [NSMutableDictionary dictionaryWithObject:messageOrPayload forKey:@"message"];
-    }
+
+  NSMutableDictionary *mutablePayload = nil;
+  
+  if ([messageOrPayload isKindOfClass:[NSDictionary class]]) {
+    
+    mutablePayload = [messageOrPayload mutableCopy];
+
+  } else if (messageOrPayload) {
+    
+    mutablePayload = [NSMutableDictionary dictionaryWithObject:messageOrPayload forKey:@"message"];
+  }
 
     [self.defaultPayload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if (obj && ![mutablePayload valueForKey:key]) {
-            [mutablePayload setObject:obj forKey:key];
-        }
+
+      if (obj && ![mutablePayload valueForKey:key]) {
+        [mutablePayload setObject:obj forKey:key];
+      }
     }];
   
     [self.channels enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
@@ -233,57 +259,76 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 - (void)startLoggingApplicationLifecycleNotifications {
-    NSArray *names = [NSArray arrayWithObjects:UIApplicationDidFinishLaunchingNotification, UIApplicationDidEnterBackgroundNotification, UIApplicationDidBecomeActiveNotification, UIApplicationDidReceiveMemoryWarningNotification, nil];
-    for (NSString *name in names) {
-        [self startLoggingNotificationName:name];
-    }
+  
+  NSArray *names = @[UIApplicationDidFinishLaunchingNotification,
+                     UIApplicationDidEnterBackgroundNotification,
+                     UIApplicationDidBecomeActiveNotification,
+                     UIApplicationDidReceiveMemoryWarningNotification];
+
+  for (NSString *name in names) {
+    [self startLoggingNotificationName:name];
+  }
 }
 
 - (void)startLoggingNotificationName:(NSString *)name {
-    [self startLoggingNotificationName:name object:nil];
+  [self startLoggingNotificationName:name object:nil];
+}
+
+- (void)startLoggingNotificationName:(NSString *)name
+                              object:(id)object {
+
+  __weak __typeof(self)weakSelf = self;
+
+  [self startLoggingNotificationName:name
+                              object:nil
+        constructingPayLoadFromBlock:^NSDictionary *(NSNotification *notification) {
+
+    __strong __typeof(weakSelf)strongSelf = weakSelf;
+
+    NSMutableDictionary *mutablePayload = [strongSelf.defaultPayload mutableCopy];
+    
+    if (notification.userInfo) {
+
+      [notification.userInfo enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [mutablePayload setObject:obj forKey:key];
+      }];
+    }
+
+    [mutablePayload setObject:name forKey:@"notification"];
+
+    return mutablePayload;
+  }];
 }
 
 - (void)startLoggingNotificationName:(NSString *)name
                               object:(id)object
-{
-    __weak __typeof(self)weakSelf = self;
-    [self startLoggingNotificationName:name object:nil constructingPayLoadFromBlock:^NSDictionary *(NSNotification *notification) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        constructingPayLoadFromBlock:(TeslaPayloadConstructionBlock)block {
 
-        NSMutableDictionary *mutablePayload = [strongSelf.defaultPayload mutableCopy];
-        if (notification.userInfo) {
-            [notification.userInfo enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-                [mutablePayload setObject:obj forKey:key];
-            }];
-        }
-        [mutablePayload setObject:name forKey:@"notification"];
+  __weak __typeof(self)weakSelf = self;
 
-        return mutablePayload;
-    }];
-}
+  [[NSNotificationCenter defaultCenter] addObserverForName:name
+                                                    object:object
+                                                     queue:self.operationQueue
+                                                usingBlock:^(NSNotification *notification) {
 
-- (void)startLoggingNotificationName:(NSString *)name
-                              object:(id)object
-        constructingPayLoadFromBlock:(NSDictionary * (^)(NSNotification *notification))block
-{
-    __weak __typeof(self)weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:name object:object queue:self.operationQueue usingBlock:^(NSNotification *notification) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        NSDictionary *payload = nil;
-        if (block) {
-            payload = block(notification);
-        }
+    __strong __typeof(weakSelf)strongSelf = weakSelf;
+    
+    NSDictionary *payload = nil;
+    
+    if (block) {
+      payload = block(notification);
+    }
 
-        [strongSelf log:payload];
-    }];
+    [strongSelf log:payload];
+  }];
 }
 
 - (void)stopLoggingNotificationName:(NSString *)name {
-    [self.notificationCenter removeObserver:self name:name object:nil];
+  [self.notificationCenter removeObserver:self name:name object:nil];
 }
 
 - (void)stopLoggingAllNotifications {
-    [self.notificationCenter removeObserver:self];
+  [self.notificationCenter removeObserver:self];
 }
 
 @end
@@ -291,30 +336,38 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 @interface TeslaStreamChannel ()
+
 @property (readwrite, nonatomic, strong) NSOutputStream *outputStream;
+
 @end
 
 @implementation TeslaStreamChannel
+
 @synthesize outputStream = _outputStream;
 
 - (id)initWithOutputStream:(NSOutputStream *)outputStream {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
 
-    self.outputStream = outputStream;
-    [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-    [self.outputStream open];
-    
-    return self;
+  self = [super init];
+  
+  if (!self) {
+    return nil;
+  }
+
+  self.outputStream = outputStream;
+  
+  [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+  [self.outputStream open];
+  
+  return self;
 }
 
 #pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
-    NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
-    [self.outputStream write:[data bytes] maxLength:[data length]];
+
+  NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
+  
+  [self.outputStream write:[data bytes] maxLength:[data length]];
 }
 
 @end
@@ -322,23 +375,22 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark -
 
 @interface TeslaHTTPChannel ()<NSURLSessionDelegate>
+
 @property (readwrite, nonatomic, copy) NSString *method;
+
 @end
 
 @implementation TeslaHTTPChannel
 
-@synthesize method = _method;
+- (id)initWithURL:(NSURL *)url method:(NSString *)method {
 
-- (id)initWithURL:(NSURL *)url
-           method:(NSString *)method
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    self.method = method;
+  self = [super init];
+  
+  if (!self) {
+    return nil;
+  }
 
-    return self;
+  return self;
 }
 
 #pragma mark - TeslaChannel
@@ -406,7 +458,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   NSLog(@"session only: %@", session);
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
   NSLog(@"did finish");
 }
@@ -415,10 +468,12 @@ didCompleteWithError:(NSError *)error {
 
 #ifdef _COREDATADEFINES_H
 @interface TeslaCoreDataChannel ()
+
 @property (readwrite, nonatomic, strong) NSEntityDescription *entity;
 @property (readwrite, nonatomic, strong) NSManagedObjectContext *context;
 @property (readwrite, nonatomic, strong) NSAttributeDescription *messageAttribute;
 @property (readwrite, nonatomic, strong) NSAttributeDescription *timestampAttribute;
+
 @end
 
 @implementation TeslaCoreDataChannel
@@ -430,34 +485,39 @@ didCompleteWithError:(NSError *)error {
 - (id)initWithEntity:(NSEntityDescription *)entity
     messageAttribute:(NSAttributeDescription *)messageAttribute
   timestampAttribute:(NSAttributeDescription *)timestampAttribute
-inManagedObjectContext:(NSManagedObjectContext *)context
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
+inManagedObjectContext:(NSManagedObjectContext *)context {
 
-    self.entity = entity;
-    self.context = context;
-    self.messageAttribute = messageAttribute;
-    self.timestampAttribute = timestampAttribute;
+  self = [super init];
+  
+  if (!self) {
+    return nil;
+  }
 
-    return self;
+  self.entity             = entity;
+  self.context            = context;
+  self.messageAttribute   = messageAttribute;
+  self.timestampAttribute = timestampAttribute;
+
+  return self;
 }
 
 #pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
-    [self.context performBlock:^{
-        NSManagedObjectContext *entry = [NSEntityDescription insertNewObjectForEntityForName:self.entity.name inManagedObjectContext:self.context];
-        [entry setValue:TeslaLogLineFromPayload(payload) forKey:self.messageAttribute.name];
-        [entry setValue:[NSDate date] forKey:self.timestampAttribute.name];
 
-        NSError *error = nil;
-        if (![self.context save:&error]) {
-            NSLog(@"Logging Error: %@", error);
-        }
-    }];
+  [self.context performBlock:^{
+
+    NSManagedObjectContext *entry = [NSEntityDescription insertNewObjectForEntityForName:self.entity.name inManagedObjectContext:self.context];
+    
+    [entry setValue:TeslaLogLineFromPayload(payload) forKey:self.messageAttribute.name];
+    [entry setValue:[NSDate date] forKey:self.timestampAttribute.name];
+
+    NSError *error = nil;
+
+    if (![self.context save:&error]) {
+      NSLog(@"Logging Error: %@", error);
+    }
+  }];
 }
 
 @end
