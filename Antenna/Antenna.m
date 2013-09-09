@@ -22,9 +22,6 @@
 
 #import "Antenna.h"
 
-#import "AFHTTPClient.h"
-#import "AFHTTPRequestOperation.h"
-
 #import <CoreData/CoreData.h>
 
 static char const *channelsThreadQueueName = "me.mattt.antenna.channels.queue";
@@ -324,13 +321,12 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-@interface AntennaHTTPChannel ()
-@property (readwrite, nonatomic, strong) AFHTTPClient *HTTPClient;
+@interface AntennaHTTPChannel ()<NSURLSessionDelegate>
 @property (readwrite, nonatomic, copy) NSString *method;
 @end
 
 @implementation AntennaHTTPChannel
-@synthesize HTTPClient = _HTTPClient;
+
 @synthesize method = _method;
 
 - (id)initWithURL:(NSURL *)url
@@ -340,8 +336,6 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     if (!self) {
         return nil;
     }
-
-    self.HTTPClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     self.method = method;
 
     return self;
@@ -350,10 +344,71 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark - AntennaChannel
 
 - (void)log:(NSDictionary *)payload {
-    NSURLRequest *request = [self.HTTPClient requestWithMethod:self.method path:nil parameters:payload];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [operation setShouldExecuteAsBackgroundTaskWithExpirationHandler:nil];
-    [self.HTTPClient enqueueHTTPRequestOperation:operation];
+
+  /**
+   * Basic implementation of saving log information to backend using NSURLSession
+   * This is setup for localhost at the moment but will be configurable at a 
+   * later date.
+   */
+
+  NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+  
+  sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  
+  /**
+   * @todo
+   * Need to create custom background queue to pass in
+   */
+
+  NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration
+                                                        delegate:self
+                                                   delegateQueue:[NSOperationQueue mainQueue]];
+  
+  session.sessionDescription = @"Testing upload of logging information";
+
+  NSData *data = [AntennaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
+
+  NSAssert(data, @"Data can't be nil");
+  
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/items"]];
+  
+  request.HTTPMethod = @"POST";
+  
+  NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
+                                                             fromData:data
+                                                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+  
+    NSString *str = [[NSString alloc] initWithData:data
+                                          encoding:NSUTF8StringEncoding];
+
+    NSLog(@"response: %@ error: %@ body: %@", response, error, str);
+  }];
+
+  uploadTask.taskDescription = @"Fetching apple task";
+
+  [uploadTask resume];
+}
+
+#pragma mark - NSURLSession* Delegate Methods
+
+/**
+ * These _might_ not be needed for our purposes
+ */
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task needNewBodyStream:(void (^)(NSInputStream *bodyStream))completionHandler {
+  NSLog(@"session: %@ task: %@", session, task);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+  NSLog(@"session only: %@", session);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error {
+  NSLog(@"did finish");
 }
 
 @end
