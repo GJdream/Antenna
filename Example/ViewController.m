@@ -29,7 +29,23 @@ NSString * const AntennaExampleNotification = @"AntennaExampleNotification";
 #pragma mark - IBAction
 
 - (IBAction)triggerNotification:(id)__unused sender {
-    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaExampleNotification object:nil];
+  
+  // testing only
+  NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  NSUInteger len = 10;
+  NSMutableString *randomString_key = [NSMutableString stringWithCapacity:len];
+  NSMutableString *randomString_val = [NSMutableString stringWithCapacity:len];
+  
+  for (int i=0; i<len; i++) {
+    [randomString_key appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+    [randomString_val appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+  }
+  
+  NSDictionary *notifInfo = @{randomString_key : randomString_val};
+  
+  [[NSNotificationCenter defaultCenter] postNotificationName:AntennaExampleNotification
+                                                      object:nil
+                                                    userInfo:notifInfo];
 }
 
 @end
