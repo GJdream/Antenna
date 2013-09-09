@@ -477,9 +477,10 @@ didCompleteWithError:(NSError *)error {
 @end
 
 @implementation TeslaCoreDataChannel
-@synthesize entity = _entity;
-@synthesize context = _context;
-@synthesize messageAttribute = _messageAttribute;
+
+@synthesize entity             = _entity;
+@synthesize context            = _context;
+@synthesize messageAttribute   = _messageAttribute;
 @synthesize timestampAttribute = _timestampAttribute;
 
 - (id)initWithEntity:(NSEntityDescription *)entity
