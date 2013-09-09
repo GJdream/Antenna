@@ -1,4 +1,4 @@
-// Antenna.m
+// Tesla.m
 // 
 // Copyright (c) 2013 Mattt Thompson
 //
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "Antenna.h"
+#import "Tesla.h"
 
 #import <CoreData/CoreData.h>
 
@@ -28,12 +28,12 @@ static char const *channelsThreadQueueName = "me.mattt.antenna.channels.queue";
 
 static dispatch_queue_t _channelsThreadQueue;
 
-NSString * const AntennaChannelAddedNotification   = @"AntennaChannelAddedNotification";
-NSString * const AntennaChannelRemovedNotification = @"AntennaChannelRemovedNotification";
+NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotification";
+NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
 
-NSString * const AntennaChannelNotificationDictKey = @"channelName";
+NSString * const TeslaChannelNotificationDictKey = @"channelName";
 
-static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
+static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
     NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
     [payload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [mutableComponents addObject:[NSString stringWithFormat:@"\"%@\"=\"%@\"", key, obj]];
@@ -42,17 +42,17 @@ static NSString * AntennaLogLineFromPayload(NSDictionary *payload) {
     return [mutableComponents componentsJoinedByString:@" "];
 }
 
-@interface AntennaStreamChannel : NSObject <AntennaChannel>
+@interface TeslaStreamChannel : NSObject <TeslaChannel>
 - (id)initWithOutputStream:(NSOutputStream *)outputStream;
 @end
 
-@interface AntennaHTTPChannel : NSObject <AntennaChannel>
+@interface TeslaHTTPChannel : NSObject <TeslaChannel>
 - (id)initWithURL:(NSURL *)url
            method:(NSString *)method;
 @end
 
 #ifdef _COREDATADEFINES_H
-@interface AntennaCoreDataChannel : NSObject <AntennaChannel>
+@interface TeslaCoreDataChannel : NSObject <TeslaChannel>
 - (id)initWithEntity:(NSEntityDescription *)entity
     messageAttribute:(NSAttributeDescription *)messageAttribute
   timestampAttribute:(NSAttributeDescription *)timestampAttribute
@@ -62,13 +62,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-@interface Antenna ()
+@interface Tesla ()
 @property (readwrite, nonatomic, strong) NSMutableDictionary *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @end
 
-@implementation Antenna
+@implementation Tesla
 @synthesize channels = _channels;
 @synthesize defaultPayload = _defaultPayload;
 @synthesize notificationCenter = _notificationCenter;
@@ -78,13 +78,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 }
 
 + (instancetype)sharedLogger {
-    static id _sharedAntenna = nil;
+    static id _sharedTesla = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedAntenna = [[self alloc] init];
+        _sharedTesla = [[self alloc] init];
     });
 
-    return _sharedAntenna;
+    return _sharedTesla;
 }
 
 - (id)init {
@@ -133,7 +133,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 }
 
 - (void)addChannelWithOutputStream:(NSOutputStream *)outputStream forName:(NSString *)name {
-    AntennaStreamChannel *channel = [[AntennaStreamChannel alloc] initWithOutputStream:outputStream];
+    TeslaStreamChannel *channel = [[TeslaStreamChannel alloc] initWithOutputStream:outputStream];
     [self addChannel:channel forName:name];
 }
 
@@ -141,7 +141,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
                    method:(NSString *)method
                   forName:(NSString *)name
 {
-    AntennaHTTPChannel *channel = [[AntennaHTTPChannel alloc] initWithURL:URL method:method];
+    TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL method:method];
     [self addChannel:channel forName:name];
 }
 
@@ -152,12 +152,12 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       inManagedObjectContext:(NSManagedObjectContext *)context
                      forName:(NSString *)name
 {
-    AntennaCoreDataChannel *channel = [[AntennaCoreDataChannel alloc] initWithEntity:entity messageAttribute:messageAttribute timestampAttribute:timestampAttribute inManagedObjectContext:context];
+    TeslaCoreDataChannel *channel = [[TeslaCoreDataChannel alloc] initWithEntity:entity messageAttribute:messageAttribute timestampAttribute:timestampAttribute inManagedObjectContext:context];
     [self addChannel:channel forName:name];
 }
 #endif
 
-- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name {
+- (void)addChannel:(id <TeslaChannel>)channel forName:(NSString *)name {
 
     /**
      * Has this channel already been added?
@@ -166,11 +166,11 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       return;
     }
 
-    NSDictionary *notifInfo   = @{AntennaChannelNotificationDictKey : name};
+    NSDictionary *notifInfo   = @{TeslaChannelNotificationDictKey : name};
   
     self.channels[name] = channel;
   
-    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelAddedNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:TeslaChannelAddedNotification
                                                         object:nil
                                                       userInfo:notifInfo];
 }
@@ -186,9 +186,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   
     [self.channels removeObjectForKey:name];
   
-    NSDictionary *notifInfo = @{AntennaChannelNotificationDictKey : name};
+    NSDictionary *notifInfo = @{TeslaChannelNotificationDictKey : name};
   
-    [[NSNotificationCenter defaultCenter] postNotificationName:AntennaChannelRemovedNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:TeslaChannelRemovedNotification
                                                         object:nil
                                                       userInfo:notifInfo];
 }
@@ -202,9 +202,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   return NO;
 }
 
-- (id <AntennaChannel>)channelForName:(NSString *)name {
+- (id <TeslaChannel>)channelForName:(NSString *)name {
 
-  id <AntennaChannel> channelObject = self.channels[name];
+  id <TeslaChannel> channelObject = self.channels[name];
   
   return channelObject;
 }
@@ -290,11 +290,11 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-@interface AntennaStreamChannel ()
+@interface TeslaStreamChannel ()
 @property (readwrite, nonatomic, strong) NSOutputStream *outputStream;
 @end
 
-@implementation AntennaStreamChannel
+@implementation TeslaStreamChannel
 @synthesize outputStream = _outputStream;
 
 - (id)initWithOutputStream:(NSOutputStream *)outputStream {
@@ -310,10 +310,10 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     return self;
 }
 
-#pragma mark - AntennaChannel
+#pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
-    NSData *data = [AntennaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
     [self.outputStream write:[data bytes] maxLength:[data length]];
 }
 
@@ -321,11 +321,11 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark -
 
-@interface AntennaHTTPChannel ()<NSURLSessionDelegate>
+@interface TeslaHTTPChannel ()<NSURLSessionDelegate>
 @property (readwrite, nonatomic, copy) NSString *method;
 @end
 
-@implementation AntennaHTTPChannel
+@implementation TeslaHTTPChannel
 
 @synthesize method = _method;
 
@@ -341,7 +341,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     return self;
 }
 
-#pragma mark - AntennaChannel
+#pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
 
@@ -366,7 +366,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   
   session.sessionDescription = @"Testing upload of logging information";
 
-  NSData *data = [AntennaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
+  NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
 
   NSAssert(data, @"Data can't be nil");
   
@@ -414,14 +414,14 @@ didCompleteWithError:(NSError *)error {
 @end
 
 #ifdef _COREDATADEFINES_H
-@interface AntennaCoreDataChannel ()
+@interface TeslaCoreDataChannel ()
 @property (readwrite, nonatomic, strong) NSEntityDescription *entity;
 @property (readwrite, nonatomic, strong) NSManagedObjectContext *context;
 @property (readwrite, nonatomic, strong) NSAttributeDescription *messageAttribute;
 @property (readwrite, nonatomic, strong) NSAttributeDescription *timestampAttribute;
 @end
 
-@implementation AntennaCoreDataChannel
+@implementation TeslaCoreDataChannel
 @synthesize entity = _entity;
 @synthesize context = _context;
 @synthesize messageAttribute = _messageAttribute;
@@ -445,12 +445,12 @@ inManagedObjectContext:(NSManagedObjectContext *)context
     return self;
 }
 
-#pragma mark - AntennaChannel
+#pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
     [self.context performBlock:^{
         NSManagedObjectContext *entry = [NSEntityDescription insertNewObjectForEntityForName:self.entity.name inManagedObjectContext:self.context];
-        [entry setValue:AntennaLogLineFromPayload(payload) forKey:self.messageAttribute.name];
+        [entry setValue:TeslaLogLineFromPayload(payload) forKey:self.messageAttribute.name];
         [entry setValue:[NSDate date] forKey:self.timestampAttribute.name];
 
         NSError *error = nil;

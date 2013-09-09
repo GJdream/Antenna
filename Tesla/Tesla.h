@@ -1,4 +1,4 @@
-// Antenna.h
+// Tesla.h
 // 
 // Copyright (c) 2013 Mattt Thompson
 //
@@ -22,17 +22,17 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const AntennaChannelAddedNotification;
-extern NSString * const AntennaChannelRemovedNotification;
+extern NSString * const TeslaChannelAddedNotification;
+extern NSString * const TeslaChannelRemovedNotification;
 
-extern NSString * const AntennaChannelNotificationDictKey;
+extern NSString * const TeslaChannelNotificationDictKey;
 
-@protocol AntennaChannel;
+@protocol TeslaChannel;
 
 /**
  
  */
-@interface Antenna : NSObject
+@interface Tesla : NSObject
 
 /**
  
@@ -90,7 +90,7 @@ extern NSString * const AntennaChannelNotificationDictKey;
 /**
  
  */
-- (void)addChannel:(id <AntennaChannel>)channel forName:(NSString *)name;
+- (void)addChannel:(id <TeslaChannel>)channel forName:(NSString *)name;
 
 /**
  
@@ -105,7 +105,7 @@ extern NSString * const AntennaChannelNotificationDictKey;
 /**
  
  */
-- (id <AntennaChannel>)channelForName:(NSString *)name;
+- (id <TeslaChannel>)channelForName:(NSString *)name;
 
 ///==============
 /// @name Logging
@@ -158,7 +158,7 @@ extern NSString * const AntennaChannelNotificationDictKey;
 
 #pragma mark -
 
-@protocol AntennaChannel <NSObject>
+@protocol TeslaChannel <NSObject>
 
 /**
  

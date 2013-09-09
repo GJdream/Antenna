@@ -21,9 +21,9 @@
 // THE SOFTWARE.
 
 #import "ViewController.h"
-#import "Antenna.h"
+#import "Tesla.h"
 
-NSString * const AntennaExampleNotification = @"AntennaExampleNotification";
+NSString * const TeslaExampleNotification = @"TeslaExampleNotification";
 
 @interface ViewController()<NSURLSessionDataDelegate>
 
@@ -48,7 +48,7 @@ NSString * const AntennaExampleNotification = @"AntennaExampleNotification";
   
   NSDictionary *notifInfo = @{randomString_key : randomString_val};
 //
-//  [[NSNotificationCenter defaultCenter] postNotificationName:AntennaExampleNotification
+//  [[NSNotificationCenter defaultCenter] postNotificationName:TeslaExampleNotification
 //                                                      object:nil
 //                                                    userInfo:notifInfo];
 //
@@ -57,7 +57,7 @@ NSString * const AntennaExampleNotification = @"AntennaExampleNotification";
    * Notifications aren't required. You can call log directly. Better approach?
    */
 
-  id antObj = [[Antenna sharedLogger] channelForName:@"defaultLog"];
+  id antObj = [[Tesla sharedLogger] channelForName:@"defaultLog"];
   
   [antObj log:notifInfo];
 }

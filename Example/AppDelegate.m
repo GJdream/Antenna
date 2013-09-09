@@ -22,17 +22,17 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "Antenna.h"
+#import "Tesla.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"LOG" forName:@"defaultLog"];
-    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"defaultLog"];
-    [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
-    [[Antenna sharedLogger] startLoggingNotificationName:AntennaExampleNotification];
+//    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"LOG" forName:@"defaultLog"];
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"defaultLog"];
+    [[Tesla sharedLogger] startLoggingApplicationLifecycleNotifications];
+    [[Tesla sharedLogger] startLoggingNotificationName:TeslaExampleNotification];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
@@ -43,7 +43,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    [[Antenna sharedLogger] removeChannelForName:@"defaultLog"];
+    [[Tesla sharedLogger] removeChannelForName:@"defaultLog"];
 }
 
 @end

@@ -12,7 +12,6 @@
 		01A6E1E917D6633C0029E623 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */; };
 		01A6E1EF17D6633C0029E623 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01A6E1ED17D6633C0029E623 /* InfoPlist.strings */; };
 		01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A6E1F017D6633C0029E623 /* Antenna_Tests.m */; };
-		01A6E1F917D6642E0029E623 /* Antenna.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECE116CA76B800CB3328 /* Antenna.m */; };
 		F83F36DA172863E000FB13E3 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F83F36D9172863E000FB13E3 /* CoreData.framework */; };
 		F85D33D617429D6900B446F5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85D33D517429D6900B446F5 /* MobileCoreServices.framework */; };
 		F85D33D817429D6E00B446F5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85D33D717429D6E00B446F5 /* SystemConfiguration.framework */; };
@@ -27,7 +26,6 @@
 		F8B5ECDD16CA766E00CB3328 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECCA16CA75EB00CB3328 /* AppDelegate.m */; };
 		F8B5ECDE16CA766F00CB3328 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECC616CA75EB00CB3328 /* main.m */; };
 		F8B5ECDF16CA767100CB3328 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECD316CA75EB00CB3328 /* ViewController.m */; };
-		F8B5ECE216CA76B800CB3328 /* Antenna.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B5ECE116CA76B800CB3328 /* Antenna.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,8 +64,6 @@
 		F8B5ECD216CA75EB00CB3328 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		F8B5ECD316CA75EB00CB3328 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		F8B5ECD616CA75EB00CB3328 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
-		F8B5ECE016CA76B800CB3328 /* Antenna.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Antenna.h; path = ../Antenna/Antenna.h; sourceTree = "<group>"; };
-		F8B5ECE116CA76B800CB3328 /* Antenna.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Antenna.m; path = ../Antenna/Antenna.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +119,6 @@
 				01A6E1EA17D6633C0029E623 /* Antenna Tests */,
 				F8B5ECB916CA75EB00CB3328 /* Frameworks */,
 				F8B5ECB816CA75EB00CB3328 /* Products */,
-				F8B5ECE316CA76D600CB3328 /* Vendor */,
 			);
 			sourceTree = "<group>";
 		};
@@ -175,23 +170,6 @@
 				F8B5ECD016CA75EB00CB3328 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		F8B5ECE316CA76D600CB3328 /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				F8B5ECE416CA76E400CB3328 /* Antenna */,
-			);
-			name = Vendor;
-			sourceTree = "<group>";
-		};
-		F8B5ECE416CA76E400CB3328 /* Antenna */ = {
-			isa = PBXGroup;
-			children = (
-				F8B5ECE016CA76B800CB3328 /* Antenna.h */,
-				F8B5ECE116CA76B800CB3328 /* Antenna.m */,
-			);
-			name = Antenna;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,7 +224,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Antenna Example" */;
+			buildConfigurationList = F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Tesla Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -292,7 +270,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01A6E1F917D6642E0029E623 /* Antenna.m in Sources */,
 				01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,7 +281,6 @@
 				F8B5ECDE16CA766F00CB3328 /* main.m in Sources */,
 				F8B5ECDD16CA766E00CB3328 /* AppDelegate.m in Sources */,
 				F8B5ECDF16CA767100CB3328 /* ViewController.m in Sources */,
-				F8B5ECE216CA76B800CB3328 /* Antenna.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +469,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Antenna Example" */ = {
+		F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Tesla Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8B5ECD816CA75EB00CB3328 /* Debug */,

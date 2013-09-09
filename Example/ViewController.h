@@ -22,7 +22,7 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString * const AntennaExampleNotification;
+extern NSString * const TeslaExampleNotification;
 
 @interface ViewController : UIViewController
 
