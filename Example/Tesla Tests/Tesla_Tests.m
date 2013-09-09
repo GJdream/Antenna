@@ -1,24 +1,24 @@
 //
-//  Antenna_Tests.m
-//  Antenna Tests
+//  Tesla_Tests.m
+//  Tesla Tests
 //
 //  Created by Cory D. Wiles on 9/3/13.
 //  Copyright (c) 2013 Mattt Thompson. All rights reserved.
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "Antenna.h"
+#import "Tesla.h"
 
-static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleNotification";
+static NSString * const TeslaTestsExampleNotification = @"TeslaTestsExampleNotification";
 
-@interface Antenna_Tests : SenTestCase
+@interface Tesla_Tests : SenTestCase
 
 - (void)channelWasAddedNotification:(NSNotification *)aNotif;
 - (void)channelWasRemovedNotification:(NSNotification *)aNotif;
 
 @end
 
-@implementation Antenna_Tests
+@implementation Tesla_Tests
 
 - (void)setUp {
   
@@ -26,16 +26,16 @@ static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleN
   
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(channelWasAddedNotification:)
-                                                 name:AntennaChannelAddedNotification
+                                                 name:TeslaChannelAddedNotification
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(channelWasRemovedNotification:)
-                                                 name:AntennaChannelRemovedNotification
+                                                 name:TeslaChannelRemovedNotification
                                                object:nil];
 
-    [[Antenna sharedLogger] startLoggingApplicationLifecycleNotifications];
-    [[Antenna sharedLogger] startLoggingNotificationName:AntennaTestsExampleNotification];
+    [[Tesla sharedLogger] startLoggingApplicationLifecycleNotifications];
+    [[Tesla sharedLogger] startLoggingNotificationName:TeslaTestsExampleNotification];
 }
 
 - (void)tearDown {
@@ -47,30 +47,30 @@ static NSString * const AntennaTestsExampleNotification = @"AntennaTestsExampleN
 
 - (void)test_000_Successfully_Add_Channel {
   
-    [[Antenna sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"]
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"]
                                        method:@"LOG"
                                       forName:@"defaultTestLog"];
 }
 
 - (void)test_001_Successfully_Remove_Channel {
-    [[Antenna sharedLogger] removeChannelForName:@"defaultTestLog"];
+    [[Tesla sharedLogger] removeChannelForName:@"defaultTestLog"];
 }
 
 #pragma mark - Notification Handlers
 
 - (void)channelWasAddedNotification:(NSNotification *)aNotif {
 
-  NSString *channelName = [aNotif userInfo][AntennaChannelNotificationDictKey];
+  NSString *channelName = [aNotif userInfo][TeslaChannelNotificationDictKey];
   
   STAssertNotNil(channelName, @"Channel name can't be nil");
 }
 
 - (void)channelWasRemovedNotification:(NSNotification *)aNotif {
   
-  NSString *deletedChannelName = [aNotif userInfo][AntennaChannelNotificationDictKey];
+  NSString *deletedChannelName = [aNotif userInfo][TeslaChannelNotificationDictKey];
   NSString *errorMsg           = [NSString stringWithFormat:@"The channel (%@) should have been deleted", deletedChannelName];
 
-  id<AntennaChannel> channelObj = [[Antenna sharedLogger] channelForName:deletedChannelName];
+  id<TeslaChannel> channelObj = [[Tesla sharedLogger] channelForName:deletedChannelName];
 
   STAssertNil(channelObj, errorMsg);
 }

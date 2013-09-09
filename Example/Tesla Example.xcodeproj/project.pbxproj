@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01A6E1E717D6633C0029E623 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01A6E1E617D6633C0029E623 /* SenTestingKit.framework */; };
-		01A6E1E817D6633C0029E623 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */; };
-		01A6E1E917D6633C0029E623 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */; };
-		01A6E1EF17D6633C0029E623 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01A6E1ED17D6633C0029E623 /* InfoPlist.strings */; };
-		01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A6E1F017D6633C0029E623 /* Antenna_Tests.m */; };
+		01E0506017DE6F9B00B75A5E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01A6E1E617D6633C0029E623 /* SenTestingKit.framework */; };
+		01E0506117DE6F9B00B75A5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */; };
+		01E0506217DE6F9B00B75A5E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */; };
+		01E0506817DE6F9B00B75A5E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01E0506617DE6F9B00B75A5E /* InfoPlist.strings */; };
+		01E0506A17DE6F9B00B75A5E /* Tesla_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E0506917DE6F9B00B75A5E /* Tesla_Tests.m */; };
+		01E0507517DE70F800B75A5E /* Tesla.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E0507417DE70F800B75A5E /* Tesla.m */; };
+		01E0507717DE711E00B75A5E /* Tesla.h in Resources */ = {isa = PBXBuildFile; fileRef = 01E0507617DE711E00B75A5E /* Tesla.h */; };
+		01E0507817DE711E00B75A5E /* Tesla.h in Resources */ = {isa = PBXBuildFile; fileRef = 01E0507617DE711E00B75A5E /* Tesla.h */; };
 		F83F36DA172863E000FB13E3 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F83F36D9172863E000FB13E3 /* CoreData.framework */; };
 		F85D33D617429D6900B446F5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85D33D517429D6900B446F5 /* MobileCoreServices.framework */; };
 		F85D33D817429D6E00B446F5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F85D33D717429D6E00B446F5 /* SystemConfiguration.framework */; };
@@ -29,26 +32,28 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		01A6E1F317D6633C0029E623 /* PBXContainerItemProxy */ = {
+		01E0506C17DE6F9B00B75A5E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F8B5ECAF16CA75EB00CB3328 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F8B5ECB616CA75EB00CB3328;
-			remoteInfo = Antenna;
+			remoteInfo = Tesla;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		01A6E1E517D6633C0029E623 /* Antenna Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Antenna Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A6E1E617D6633C0029E623 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		01A6E1EC17D6633C0029E623 /* Antenna Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Antenna Tests-Info.plist"; sourceTree = "<group>"; };
-		01A6E1EE17D6633C0029E623 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		01A6E1F017D6633C0029E623 /* Antenna_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Antenna_Tests.m; sourceTree = "<group>"; };
-		01A6E1F217D6633C0029E623 /* Antenna Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Antenna Tests-Prefix.pch"; sourceTree = "<group>"; };
+		01E0505F17DE6F9B00B75A5E /* Tesla Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tesla Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01E0506517DE6F9B00B75A5E /* Tesla Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tesla Tests-Info.plist"; sourceTree = "<group>"; };
+		01E0506717DE6F9B00B75A5E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		01E0506917DE6F9B00B75A5E /* Tesla_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tesla_Tests.m; sourceTree = "<group>"; };
+		01E0506B17DE6F9B00B75A5E /* Tesla Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tesla Tests-Prefix.pch"; sourceTree = "<group>"; };
+		01E0507417DE70F800B75A5E /* Tesla.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Tesla.m; path = ../Tesla/Tesla.m; sourceTree = "<group>"; };
+		01E0507617DE711E00B75A5E /* Tesla.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = Tesla.h; path = ../Tesla/Tesla.h; sourceTree = "<group>"; };
 		F83F36D9172863E000FB13E3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F85D33D517429D6900B446F5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F85D33D717429D6E00B446F5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		F8B5ECB716CA75EB00CB3328 /* Antenna.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Antenna.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8B5ECB716CA75EB00CB3328 /* Tesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8B5ECBE16CA75EB00CB3328 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -67,13 +72,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		01A6E1E217D6633C0029E623 /* Frameworks */ = {
+		01E0505C17DE6F9B00B75A5E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01A6E1E717D6633C0029E623 /* SenTestingKit.framework in Frameworks */,
-				01A6E1E917D6633C0029E623 /* UIKit.framework in Frameworks */,
-				01A6E1E817D6633C0029E623 /* Foundation.framework in Frameworks */,
+				01E0506017DE6F9B00B75A5E /* SenTestingKit.framework in Frameworks */,
+				01E0506217DE6F9B00B75A5E /* UIKit.framework in Frameworks */,
+				01E0506117DE6F9B00B75A5E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,30 +98,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		01A6E1EA17D6633C0029E623 /* Antenna Tests */ = {
+		01E0506317DE6F9B00B75A5E /* Tesla Tests */ = {
 			isa = PBXGroup;
 			children = (
-				01A6E1F017D6633C0029E623 /* Antenna_Tests.m */,
-				01A6E1EB17D6633C0029E623 /* Supporting Files */,
+				01E0506917DE6F9B00B75A5E /* Tesla_Tests.m */,
+				01E0506417DE6F9B00B75A5E /* Supporting Files */,
 			);
-			path = "Antenna Tests";
+			path = "Tesla Tests";
 			sourceTree = "<group>";
 		};
-		01A6E1EB17D6633C0029E623 /* Supporting Files */ = {
+		01E0506417DE6F9B00B75A5E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				01A6E1EC17D6633C0029E623 /* Antenna Tests-Info.plist */,
-				01A6E1ED17D6633C0029E623 /* InfoPlist.strings */,
-				01A6E1F217D6633C0029E623 /* Antenna Tests-Prefix.pch */,
+				01E0506517DE6F9B00B75A5E /* Tesla Tests-Info.plist */,
+				01E0506617DE6F9B00B75A5E /* InfoPlist.strings */,
+				01E0506B17DE6F9B00B75A5E /* Tesla Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		01E0507917DE714300B75A5E /* Tesla */ = {
+			isa = PBXGroup;
+			children = (
+				01E0507617DE711E00B75A5E /* Tesla.h */,
+				01E0507417DE70F800B75A5E /* Tesla.m */,
+			);
+			name = Tesla;
 			sourceTree = "<group>";
 		};
 		F8B5ECAE16CA75EB00CB3328 = {
 			isa = PBXGroup;
 			children = (
-				F8B5ECC016CA75EB00CB3328 /* Antenna */,
-				01A6E1EA17D6633C0029E623 /* Antenna Tests */,
+				01E0507917DE714300B75A5E /* Tesla */,
+				F8B5ECC016CA75EB00CB3328 /* Tesla Example */,
+				01E0506317DE6F9B00B75A5E /* Tesla Tests */,
 				F8B5ECB916CA75EB00CB3328 /* Frameworks */,
 				F8B5ECB816CA75EB00CB3328 /* Products */,
 			);
@@ -125,8 +140,8 @@
 		F8B5ECB816CA75EB00CB3328 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F8B5ECB716CA75EB00CB3328 /* Antenna.app */,
-				01A6E1E517D6633C0029E623 /* Antenna Tests.octest */,
+				F8B5ECB716CA75EB00CB3328 /* Tesla.app */,
+				01E0505F17DE6F9B00B75A5E /* Tesla Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,7 +160,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F8B5ECC016CA75EB00CB3328 /* Antenna */ = {
+		F8B5ECC016CA75EB00CB3328 /* Tesla Example */ = {
 			isa = PBXGroup;
 			children = (
 				F8B5ECC916CA75EB00CB3328 /* AppDelegate.h */,
@@ -155,7 +170,7 @@
 				F8B5ECD516CA75EB00CB3328 /* ViewController.xib */,
 				F8B5ECC116CA75EB00CB3328 /* Supporting Files */,
 			);
-			name = Antenna;
+			name = "Tesla Example";
 			sourceTree = "<group>";
 		};
 		F8B5ECC116CA75EB00CB3328 /* Supporting Files */ = {
@@ -175,27 +190,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		01A6E1E417D6633C0029E623 /* Antenna Tests */ = {
+		01E0505E17DE6F9B00B75A5E /* Tesla Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01A6E1F717D6633C0029E623 /* Build configuration list for PBXNativeTarget "Antenna Tests" */;
+			buildConfigurationList = 01E0506E17DE6F9B00B75A5E /* Build configuration list for PBXNativeTarget "Tesla Tests" */;
 			buildPhases = (
-				01A6E1E117D6633C0029E623 /* Sources */,
-				01A6E1E217D6633C0029E623 /* Frameworks */,
-				01A6E1E317D6633C0029E623 /* Resources */,
+				01E0505B17DE6F9B00B75A5E /* Sources */,
+				01E0505C17DE6F9B00B75A5E /* Frameworks */,
+				01E0505D17DE6F9B00B75A5E /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				01A6E1F417D6633C0029E623 /* PBXTargetDependency */,
+				01E0506D17DE6F9B00B75A5E /* PBXTargetDependency */,
 			);
-			name = "Antenna Tests";
-			productName = "Antenna Tests";
-			productReference = 01A6E1E517D6633C0029E623 /* Antenna Tests.octest */;
+			name = "Tesla Tests";
+			productName = "Tesla Tests";
+			productReference = 01E0505F17DE6F9B00B75A5E /* Tesla Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
-		F8B5ECB616CA75EB00CB3328 /* Antenna */ = {
+		F8B5ECB616CA75EB00CB3328 /* Tesla */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F8B5ECDA16CA75EB00CB3328 /* Build configuration list for PBXNativeTarget "Antenna" */;
+			buildConfigurationList = F8B5ECDA16CA75EB00CB3328 /* Build configuration list for PBXNativeTarget "Tesla" */;
 			buildPhases = (
 				F8B5ECB316CA75EB00CB3328 /* Sources */,
 				F8B5ECB416CA75EB00CB3328 /* Frameworks */,
@@ -205,9 +220,9 @@
 			);
 			dependencies = (
 			);
-			name = Antenna;
+			name = Tesla;
 			productName = Antenna;
-			productReference = F8B5ECB716CA75EB00CB3328 /* Antenna.app */;
+			productReference = F8B5ECB716CA75EB00CB3328 /* Tesla.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -219,7 +234,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Mattt Thompson";
 				TargetAttributes = {
-					01A6E1E417D6633C0029E623 = {
+					01E0505E17DE6F9B00B75A5E = {
 						TestTargetID = F8B5ECB616CA75EB00CB3328;
 					};
 				};
@@ -236,18 +251,19 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8B5ECB616CA75EB00CB3328 /* Antenna */,
-				01A6E1E417D6633C0029E623 /* Antenna Tests */,
+				F8B5ECB616CA75EB00CB3328 /* Tesla */,
+				01E0505E17DE6F9B00B75A5E /* Tesla Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		01A6E1E317D6633C0029E623 /* Resources */ = {
+		01E0505D17DE6F9B00B75A5E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01A6E1EF17D6633C0029E623 /* InfoPlist.strings in Resources */,
+				01E0507817DE711E00B75A5E /* Tesla.h in Resources */,
+				01E0506817DE6F9B00B75A5E /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +271,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01E0507717DE711E00B75A5E /* Tesla.h in Resources */,
 				F8B5ECC516CA75EB00CB3328 /* InfoPlist.strings in Resources */,
 				F8B5ECCD16CA75EB00CB3328 /* Default.png in Resources */,
 				F8B5ECCF16CA75EB00CB3328 /* Default@2x.png in Resources */,
@@ -266,11 +283,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		01A6E1E117D6633C0029E623 /* Sources */ = {
+		01E0505B17DE6F9B00B75A5E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01A6E1F117D6633C0029E623 /* Antenna_Tests.m in Sources */,
+				01E0506A17DE6F9B00B75A5E /* Tesla_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01E0507517DE70F800B75A5E /* Tesla.m in Sources */,
 				F8B5ECDE16CA766F00CB3328 /* main.m in Sources */,
 				F8B5ECDD16CA766E00CB3328 /* AppDelegate.m in Sources */,
 				F8B5ECDF16CA767100CB3328 /* ViewController.m in Sources */,
@@ -287,18 +305,18 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		01A6E1F417D6633C0029E623 /* PBXTargetDependency */ = {
+		01E0506D17DE6F9B00B75A5E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F8B5ECB616CA75EB00CB3328 /* Antenna */;
-			targetProxy = 01A6E1F317D6633C0029E623 /* PBXContainerItemProxy */;
+			target = F8B5ECB616CA75EB00CB3328 /* Tesla */;
+			targetProxy = 01E0506C17DE6F9B00B75A5E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		01A6E1ED17D6633C0029E623 /* InfoPlist.strings */ = {
+		01E0506617DE6F9B00B75A5E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				01A6E1EE17D6633C0029E623 /* en */,
+				01E0506717DE6F9B00B75A5E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -322,10 +340,10 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		01A6E1F517D6633C0029E623 /* Debug */ = {
+		01E0506F17DE6F9B00B75A5E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Antenna.app/Antenna";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tesla.app/Tesla";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -336,7 +354,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Antenna Tests/Antenna Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Tesla Tests/Tesla Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -344,18 +362,17 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "Antenna Tests/Antenna Tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				INFOPLIST_FILE = "Tesla Tests/Tesla Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
-		01A6E1F617D6633C0029E623 /* Release */ = {
+		01E0507017DE6F9B00B75A5E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Antenna.app/Antenna";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tesla.app/Tesla";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -367,12 +384,11 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Antenna Tests/Antenna Tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Tesla Tests/Tesla Tests-Prefix.pch";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				INFOPLIST_FILE = "Antenna Tests/Antenna Tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				INFOPLIST_FILE = "Tesla Tests/Tesla Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -391,7 +407,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -404,7 +420,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -422,13 +438,13 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -438,9 +454,11 @@
 		F8B5ECDB16CA75EB00CB3328 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -449,9 +467,11 @@
 		F8B5ECDC16CA75EB00CB3328 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -460,14 +480,13 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		01A6E1F717D6633C0029E623 /* Build configuration list for PBXNativeTarget "Antenna Tests" */ = {
+		01E0506E17DE6F9B00B75A5E /* Build configuration list for PBXNativeTarget "Tesla Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				01A6E1F517D6633C0029E623 /* Debug */,
-				01A6E1F617D6633C0029E623 /* Release */,
+				01E0506F17DE6F9B00B75A5E /* Debug */,
+				01E0507017DE6F9B00B75A5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 		F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Tesla Example" */ = {
 			isa = XCConfigurationList;
@@ -478,7 +497,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8B5ECDA16CA75EB00CB3328 /* Build configuration list for PBXNativeTarget "Antenna" */ = {
+		F8B5ECDA16CA75EB00CB3328 /* Build configuration list for PBXNativeTarget "Tesla" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8B5ECDB16CA75EB00CB3328 /* Debug */,
