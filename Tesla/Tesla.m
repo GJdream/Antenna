@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "Tesla.h"
+#import "TeslaSession.h"
 #import <CoreData/CoreData.h>
 
 typedef NSDictionary *(^TeslaPayloadConstructionBlock)(NSNotification *notification);
@@ -112,6 +113,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   }
 
   [self.defaultPayload setValue:[[NSLocale currentLocale] localeIdentifier] forKey:@"locale"];
+  [self.defaultPayload setValue:[[NSDate date] description] forKey:@"currentTimestamp"];
 
   self.notificationCenter = [NSNotificationCenter defaultCenter];
   self.operationQueue     = [[NSOperationQueue alloc] init];
@@ -396,33 +398,13 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
-
-  /**
-   * Basic implementation of saving log information to backend using NSURLSession
-   * This is setup for localhost at the moment but will be configurable at a 
-   * later date.
-   */
-
-  NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
   
-  sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  TeslaSession *teslaSession = [TeslaSession sharedSessionWithDelegate:self queue:[NSOperationQueue mainQueue]];
   
-  /**
-   * @todo
-   * Need to create custom background queue to pass in
-   */
+  NSError *error = nil;
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:&error];
 
-  NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration
-                                                        delegate:self
-                                                   delegateQueue:[NSOperationQueue mainQueue]];
-  
-  session.sessionDescription = @"Testing upload of logging information";
-
-  //NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
-  
-  NSError * error = nil;
-  NSData * jsonData = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:&error];
-  if(error) {
+  if (error) {
     NSLog(@"error creating jsonData");
   }
   
@@ -433,9 +415,9 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   request.HTTPMethod = @"POST";
   [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
   
-  NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
-                                                             fromData:jsonData
-                                                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+  NSURLSessionUploadTask *uploadTask = [teslaSession.session uploadTaskWithRequest:request
+                                                                          fromData:jsonData
+                                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
   
     NSString *str = [[NSString alloc] initWithData:data
                                           encoding:NSUTF8StringEncoding];
