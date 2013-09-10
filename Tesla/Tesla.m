@@ -418,16 +418,23 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   
   session.sessionDescription = @"Testing upload of logging information";
 
-  NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
-
-  NSAssert(data, @"Data can't be nil");
+  //NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
   
+  NSError * error = nil;
+  NSData * jsonData = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:&error];
+  if(error) {
+    NSLog(@"error creating jsonData");
+  }
+  
+  NSAssert(jsonData, @"Data can't be nil");
+    
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/items"]];
   
   request.HTTPMethod = @"POST";
+  [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
   
   NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
-                                                             fromData:data
+                                                             fromData:jsonData
                                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
   
     NSString *str = [[NSString alloc] initWithData:data
@@ -436,8 +443,8 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     NSLog(@"response: %@ error: %@ body: %@", response, error, str);
   }];
 
-  uploadTask.taskDescription = @"Fetching apple task";
-
+  uploadTask.taskDescription = @"POSTing log item";
+  
   [uploadTask resume];
 }
 
