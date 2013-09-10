@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01D9B1EB17DFB0A300212622 /* TeslaSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D9B1EA17DFB0A300212622 /* TeslaSession.m */; };
+		01D9B1EC17DFB0A300212622 /* TeslaSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D9B1EA17DFB0A300212622 /* TeslaSession.m */; };
 		01E0506017DE6F9B00B75A5E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01A6E1E617D6633C0029E623 /* SenTestingKit.framework */; };
 		01E0506117DE6F9B00B75A5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBC16CA75EB00CB3328 /* Foundation.framework */; };
 		01E0506217DE6F9B00B75A5E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B5ECBA16CA75EB00CB3328 /* UIKit.framework */; };
@@ -43,13 +45,15 @@
 
 /* Begin PBXFileReference section */
 		01A6E1E617D6633C0029E623 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		01D9B1E917DFB0A300212622 /* TeslaSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TeslaSession.h; path = ../Tesla/TeslaSession.h; sourceTree = "<group>"; };
+		01D9B1EA17DFB0A300212622 /* TeslaSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TeslaSession.m; path = ../Tesla/TeslaSession.m; sourceTree = "<group>"; };
 		01E0505F17DE6F9B00B75A5E /* Tesla Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tesla Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01E0506517DE6F9B00B75A5E /* Tesla Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tesla Tests-Info.plist"; sourceTree = "<group>"; };
 		01E0506717DE6F9B00B75A5E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		01E0506917DE6F9B00B75A5E /* Tesla_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tesla_Tests.m; sourceTree = "<group>"; };
 		01E0506B17DE6F9B00B75A5E /* Tesla Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tesla Tests-Prefix.pch"; sourceTree = "<group>"; };
 		01E0507417DE70F800B75A5E /* Tesla.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Tesla.m; path = ../Tesla/Tesla.m; sourceTree = "<group>"; };
-		01E0507617DE711E00B75A5E /* Tesla.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = Tesla.h; path = ../Tesla/Tesla.h; sourceTree = "<group>"; };
+		01E0507617DE711E00B75A5E /* Tesla.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Tesla.h; path = ../Tesla/Tesla.h; sourceTree = "<group>"; };
 		F83F36D9172863E000FB13E3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F85D33D517429D6900B446F5 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F85D33D717429D6E00B446F5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -122,6 +126,8 @@
 			children = (
 				01E0507617DE711E00B75A5E /* Tesla.h */,
 				01E0507417DE70F800B75A5E /* Tesla.m */,
+				01D9B1E917DFB0A300212622 /* TeslaSession.h */,
+				01D9B1EA17DFB0A300212622 /* TeslaSession.m */,
 			);
 			name = Tesla;
 			sourceTree = "<group>";
@@ -287,6 +293,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01D9B1EC17DFB0A300212622 /* TeslaSession.m in Sources */,
 				01E0506A17DE6F9B00B75A5E /* Tesla_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01D9B1EB17DFB0A300212622 /* TeslaSession.m in Sources */,
 				01E0507517DE70F800B75A5E /* Tesla.m in Sources */,
 				F8B5ECDE16CA766F00CB3328 /* main.m in Sources */,
 				F8B5ECDD16CA766E00CB3328 /* AppDelegate.m in Sources */,
@@ -487,6 +495,7 @@
 				01E0507017DE6F9B00B75A5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F8B5ECB216CA75EB00CB3328 /* Build configuration list for PBXProject "Tesla Example" */ = {
 			isa = XCConfigurationList;
