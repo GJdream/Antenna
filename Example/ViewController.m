@@ -62,4 +62,10 @@ NSString * const TeslaExampleNotification = @"TeslaExampleNotification";
   [antObj log:notifInfo];
 }
 
+// Log to file for later send when app backgrounded
+- (IBAction)logEventPressed:(id)sender {
+  id antObj = [[Tesla sharedLogger] channelForName:@"defaultLog"];
+  [antObj logEvent:@"this is a test"];
+}
+
 @end

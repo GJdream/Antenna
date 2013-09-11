@@ -165,4 +165,6 @@ extern NSString * const TeslaChannelNotificationDictKey;
  */
 - (void)log:(NSDictionary *)payload;
 
+@optional
+- (void)logEvent:(NSString *)eventMessage;
 @end
