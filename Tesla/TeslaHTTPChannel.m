@@ -32,6 +32,8 @@
                                              object:nil];
   
   self.backGroundSession = [TeslaSession backgroundSessionWithDelegate:self];
+
+  self.backGroundSession.urlString = [url.absoluteString copy];
   
   return self;
 }
@@ -65,13 +67,29 @@
 
 - (void)log:(NSDictionary *)payload {
   
-  /**
-   * NSDictionary does have an instance method for writing to file, but does so
-   * via plist. Calling `description` method will return a string to write out
-   * via txt file.
-   */
+  NSString * (^parseToJSON)(NSDictionary *dict) = ^ NSString *(NSDictionary *dict){
+
+    NSString *jsonString = nil;
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:payload
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    if (jsonData) {
+
+      jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+      
+    } else {
+      
+      NSLog(@"error parsing data: %@", error);
+    }
+
+    return jsonString;
+  };
   
-  [self logEvent:payload.description];
+  NSString *jsonPayload = parseToJSON(payload);
+  
+  [self logEvent:jsonPayload];
 }
 
 #pragma mark - Background Notification
