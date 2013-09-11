@@ -33,7 +33,7 @@ static dispatch_queue_t _channelsThreadQueue;
 NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotification";
 NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
-NSString * const TeslaFilesSubDirectoryName = @"tesla";
+NSString * const TeslaFilesSubDirectoryName      = @"tesla";
 
 static NSString * const TeslaLogFilePrefix = @"log_";
 
@@ -54,7 +54,7 @@ static NSString * TemporaryDirectory() {
 	static dispatch_once_t onceToken;
   
 	dispatch_once(&onceToken, ^{
-		__tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"Tesla"];
+		__tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:TeslaFilesSubDirectoryName];
 
     NSFileManager *manager = [[NSFileManager alloc] init];
 
@@ -148,7 +148,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   
   // Generate directory, if not already there
   NSError * error = nil;
-  [[NSFileManager defaultManager] createDirectoryAtPath:[Tesla teslaLogDirectory]
+  [[NSFileManager defaultManager] createDirectoryAtPath:TemporaryDirectory()
                             withIntermediateDirectories:YES
                                              attributes:nil
                                                   error:&error];
@@ -156,24 +156,20 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     NSLog(@"Error creating tmp log directory: %@", error);
   }
 
-  
   return self;
 }
 
-+ (NSString*)teslaLogDirectory {
-  return [NSTemporaryDirectory() stringByAppendingPathComponent:TeslaFilesSubDirectoryName];
-}
-
 + (NSArray *)pendingFiles {
-  NSError * error = nil;
-  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[Tesla teslaLogDirectory]
+
+  NSError *error = nil;
+  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TemporaryDirectory()
                                                                        error:&error];
   if (files == nil || ![files count] || error) {
     return nil;
   }
+  
   return files;
 }
-
 
 - (void)setChannels:(NSMutableDictionary *)channels {
   
@@ -451,6 +447,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
                                            selector:@selector(appDidEnterBackground)
                                                name:UIApplicationDidEnterBackgroundNotification
                                              object:nil];
+
   self.backGroundSession = [TeslaSession backgroundSessionWithDelegate:self];
 
   return self;
@@ -464,11 +461,11 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   // Write file to tmp dir
   NSError *error;
   NSString *date = [NSDateFormatter localizedStringFromDate:[NSDate date]
-                                                        dateStyle:NSDateFormatterFullStyle
-                                                        timeStyle:NSDateFormatterFullStyle];
+                                                  dateStyle:NSDateFormatterFullStyle
+                                                  timeStyle:NSDateFormatterFullStyle];
   
-  NSString *fileName = [NSString stringWithFormat:@"log_%@.txt",date];
-  NSString *filePath = [[Tesla teslaLogDirectory] stringByAppendingPathComponent:fileName];
+  NSString *fileName = [NSString stringWithFormat:@"log_%@.txt", date];
+  NSString *filePath = [TemporaryDirectory() stringByAppendingPathComponent:fileName];
   
   BOOL success = [eventMessage writeToFile:filePath
                                 atomically:YES
@@ -484,38 +481,32 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 }
 
 - (void)log:(NSDictionary *)payload {
-
-  NSString *filename = [NSString stringWithFormat:@"%@%@", TeslaLogFilePrefix, payload[@"uuid"]];
-  NSString *logFile  = [TemporaryDirectory() stringByAppendingPathComponent:filename];
-  NSError *writeError;
-
-  BOOL didWrite = [payload.description writeToFile:logFile
-                        atomically:YES
-                          encoding:NSUTF8StringEncoding
-                             error:&writeError];
   
-  if (!didWrite) {
-    NSLog(@"There was an error writing the payload: %@ to the file: %@ [%@]", payload, logFile, writeError);
-  }
-  
-  if (writeError) {
-    NSLog(@"There was an error writing the payload: %@ to the file: %@ [%@]", payload, logFile, writeError);
-  }
+  /**
+   * NSDictionary does have an instance method for writing to file, but does so 
+   * via plist. Calling `description` method will return a string to write out
+   * via txt file.
+   */
+
+  [self logEvent:payload.description];
 }
 
 #pragma mark - Background Notification
 
 - (void)appDidEnterBackground {
+
   NSLog(@"App entered background");
   
   // Check for log files to send
-  NSArray * pendingFiles = [Tesla pendingFiles];
-  if([pendingFiles count]) {
+  NSArray *pendingFiles = [Tesla pendingFiles];
+
+  if ([pendingFiles count]) {
+    
     NSLog(@"Sending files...");
+    
     [self.backGroundSession sendFilesInBackground:pendingFiles];
   }
 }
-
 
 #pragma mark - NSURLSession* Delegate Methods
 
