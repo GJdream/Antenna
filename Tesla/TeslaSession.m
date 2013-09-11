@@ -63,8 +63,8 @@
     sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     
     /**
-     * @todo
-     * Need to create custom background queue to pass in
+     * NSURLSession retains it's delegate. Not sure if our property should be 
+     * weak (normal pattern) or strong. Currently it is weak.
      */
     
     _session = [NSURLSession sessionWithConfiguration:sessionConfiguration
@@ -103,15 +103,32 @@
 
 - (void)sendFilesInBackground:(NSArray *)files {
 
-  for (NSString * path in files) {
-    NSLog(@"sending %@",path);
+  /**
+   * Want to test out a little concurrency methodology.
+   */
+  
+  [files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *path, NSUInteger idx, BOOL *stop){
+  
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/file"]];
     
     request.HTTPMethod = @"POST";
+
     [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+    
     NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
                                                                     fromFile:[NSURL fileURLWithPath:path]];
     [uploadTask resume];
-  }
+  }];
+  
+//  for (NSString * path in files) {
+//    NSLog(@"sending %@",path);
+//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/file"]];
+//    
+//    request.HTTPMethod = @"POST";
+//    [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+//    NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
+//                                                                    fromFile:[NSURL fileURLWithPath:path]];
+//    [uploadTask resume];
+//  }
 }
 @end
