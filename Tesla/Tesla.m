@@ -34,6 +34,8 @@ NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotificati
 NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
 
+static NSString * const TeslaLogFilePrefix = @"log_";
+
 static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 
   NSMutableArray *mutableComponents = [NSMutableArray arrayWithCapacity:[payload count]];
@@ -43,6 +45,31 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   }];
 
   return [mutableComponents componentsJoinedByString:@" "];
+}
+
+static NSString * TemporaryDirectory() {
+  
+	static NSString *__tempPath = nil;
+	static dispatch_once_t onceToken;
+  
+	dispatch_once(&onceToken, ^{
+		__tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"Tesla"];
+
+    NSFileManager *manager = [[NSFileManager alloc] init];
+
+    NSError *error;
+
+		[manager createDirectoryAtPath:__tempPath
+		   withIntermediateDirectories:YES
+                        attributes:nil
+                             error:&error];
+    
+    if (error) {
+      NSLog(@"error setting the temp directory: %@", error);
+    }
+	});
+  
+	return __tempPath;
 }
 
 @interface TeslaStreamChannel : NSObject <TeslaChannel>
@@ -398,36 +425,23 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 #pragma mark - TeslaChannel
 
 - (void)log:(NSDictionary *)payload {
-  
-  TeslaSession *teslaSession = [TeslaSession sharedSessionWithDelegate:self queue:[NSOperationQueue mainQueue]];
-  
-  NSError *error = nil;
-  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:&error];
 
-  if (error) {
-    NSLog(@"error creating jsonData");
+  NSString *filename = [NSString stringWithFormat:@"%@%@", TeslaLogFilePrefix, payload[@"uuid"]];
+  NSString *logFile  = [TemporaryDirectory() stringByAppendingPathComponent:filename];
+  NSError *writeError;
+
+  BOOL didWrite = [payload.description writeToFile:logFile
+                        atomically:YES
+                          encoding:NSUTF8StringEncoding
+                             error:&writeError];
+  
+  if (!didWrite) {
+    NSLog(@"There was an error writing the payload: %@ to the file: %@ [%@]", payload, logFile, writeError);
   }
   
-  NSAssert(jsonData, @"Data can't be nil");
-    
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/items"]];
-  
-  request.HTTPMethod = @"POST";
-  [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-  
-  NSURLSessionUploadTask *uploadTask = [teslaSession.session uploadTaskWithRequest:request
-                                                                          fromData:jsonData
-                                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
-  
-    NSString *str = [[NSString alloc] initWithData:data
-                                          encoding:NSUTF8StringEncoding];
-
-    NSLog(@"response: %@ error: %@ body: %@", response, error, str);
-  }];
-
-  uploadTask.taskDescription = @"POSTing log item";
-  
-  [uploadTask resume];
+  if (writeError) {
+    NSLog(@"There was an error writing the payload: %@ to the file: %@ [%@]", payload, logFile, writeError);
+  }
 }
 
 #pragma mark - NSURLSession* Delegate Methods
