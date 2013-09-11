@@ -95,7 +95,6 @@
                                         delegateQueue:nil];
     
     _session.sessionDescription = @"Testing upload of logging information";
-    
   }
   
   return self;
@@ -109,7 +108,7 @@
   
   [files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *path, NSUInteger idx, BOOL *stop){
   
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/file"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlString]];
     
     request.HTTPMethod = @"POST";
 
@@ -119,16 +118,5 @@
                                                                     fromFile:[NSURL fileURLWithPath:path]];
     [uploadTask resume];
   }];
-  
-//  for (NSString * path in files) {
-//    NSLog(@"sending %@",path);
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://localhost:5000/file"]];
-//    
-//    request.HTTPMethod = @"POST";
-//    [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
-//    NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
-//                                                                    fromFile:[NSURL fileURLWithPath:path]];
-//    [uploadTask resume];
-//  }
 }
 @end

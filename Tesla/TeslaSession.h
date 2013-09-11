@@ -11,6 +11,7 @@
 @interface TeslaSession : NSObject
 
 @property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, copy) NSString *urlString;
 
 + (instancetype)sharedSessionWithDelegate:(id <NSURLSessionDelegate>)delegate
                                     queue:(NSOperationQueue *)aQueue;
