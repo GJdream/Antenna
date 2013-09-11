@@ -100,16 +100,7 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   self.notificationCenter = [NSNotificationCenter defaultCenter];
   self.operationQueue     = [[NSOperationQueue alloc] init];
   
-  // Generate directory, if not already there
-  NSError * error = nil;
-
-  [[NSFileManager defaultManager] createDirectoryAtPath:[Tesla logTempDirectory]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:&error];
-  if (error != nil) {
-    NSLog(@"Error creating tmp log directory: %@", error);
-  }
+  [Tesla logTempDirectory];
 
   return self;
 }
