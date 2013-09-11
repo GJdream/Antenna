@@ -47,25 +47,46 @@ NSString * const TeslaExampleNotification = @"TeslaExampleNotification";
   }
   
   NSDictionary *notifInfo = @{randomString_key : randomString_val};
-//
-//  [[NSNotificationCenter defaultCenter] postNotificationName:TeslaExampleNotification
-//                                                      object:nil
-//                                                    userInfo:notifInfo];
-//
   
   /**
-   * Notifications aren't required. You can call log directly. Better approach?
+   * Logs _just_ for defaultLog channel
    */
 
-  id antObj = [[Tesla sharedLogger] channelForName:@"defaultLog"];
-  
-  [antObj log:notifInfo];
+  [[Tesla sharedLogger] logEventMessage:notifInfo forChannelName:@"defaultLog"];
 }
 
 // Log to file for later send when app backgrounded
 - (IBAction)logEventPressed:(id)sender {
-  id antObj = [[Tesla sharedLogger] channelForName:@"defaultLog"];
-  [antObj logEvent:@"this is a test"];
+
+  /**
+   * @todo
+   * move all of this to unit tests
+   */
+  
+  /**
+   * Logs _just_ for secondDefaultLog channel
+   */
+  
+  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for secondDefaultLog"} forChannelName:@"secondDefaultLog"];
+  
+  /**
+   * This will log to everything
+   */
+
+  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for everything"}];
+  
+  /**
+   * This should not log anything because the channel doesn't exist
+   */
+
+  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for everything"} forChannelName:@"doesnotExist"];
+  
+  /**
+   * This will log explicitly to channels
+   */
+  
+  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for explicitly all three"} forChannelNames:@[@"defaultLog", @"secondDefaultLog", @"finalDefaultLog"]];
+  
 }
 
 @end

@@ -24,10 +24,23 @@
 
 extern NSString * const TeslaChannelAddedNotification;
 extern NSString * const TeslaChannelRemovedNotification;
-
 extern NSString * const TeslaChannelNotificationDictKey;
+extern NSString * const TeslaFilesSubDirectoryName;
 
-@protocol TeslaChannel;
+#pragma mark - Tesla Channel Protocol
+
+@protocol TeslaChannel <NSObject>
+
+/**
+ 
+ */
+- (void)log:(NSDictionary *)payload;
+
+@optional
+
+- (void)logEvent:(NSString *)eventMessage;
+
+@end
 
 /**
  
@@ -54,38 +67,11 @@ extern NSString * const TeslaChannelNotificationDictKey;
  */
 + (instancetype)sharedLogger;
 
++ (NSString *)logTempDirectory;
+
 ///======================
 /// @name Adding Channels
 ///======================
-
-/**
- 
- */
-- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name;
-
-/**
-
- */
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream
-                           forName:(NSString *)name;
-
-/**
- 
- */
-- (void)addChannelWithURL:(NSURL *)URL
-                   method:(NSString *)method
-                  forName:(NSString *)name;
-
-/**
- 
- */
-#ifdef _COREDATADEFINES_H
-- (void)addChannelWithEntity:(NSEntityDescription *)entity
-            messageAttribute:(NSAttributeDescription *)messageAttribute
-          timestampAttribute:(NSAttributeDescription *)timestampAttribute
-      inManagedObjectContext:(NSManagedObjectContext *)context
-                     forName:(NSString *)name;
-#endif
 
 /**
  
@@ -107,14 +93,42 @@ extern NSString * const TeslaChannelNotificationDictKey;
  */
 - (id <TeslaChannel>)channelForName:(NSString *)name;
 
-///==============
-/// @name Logging
-///==============
+/**
+ 
+ */
++ (NSArray *)pendingFiles;
 
 /**
-
+ 
  */
-- (void)log:(id)messageOrPayload;
+- (void)addChannelWithURL:(NSURL *)URL method:(NSString *)method forName:(NSString *)name;
+
+/**
+ * @name logEventMessage
+ * @param id messageOrPayload
+ *
+ * This is the _main_ log method for Tesla. It check and see
+ * `[obj respondsToSelector:@selector(log:)]` to make sure that the channel obj
+ * will call the delegate method `log`. Due to the confusing nature of method
+ * names this should be refactored.
+ *
+ * @todo
+ * We give a channel by name, but yet we log to all channels. This method should
+ * ideally accept a payload and array of channels names. If not then what's the
+ * point of having names or this _could_ be used as general message to just log
+ * all channels
+ */
+- (void)logEventMessage:(id)messageOrPayload;
+
+/**
+ 
+ */
+- (void)logEventMessage:(id)messageOrPayload forChannelNames:(NSArray *)names;
+
+/**
+ 
+ */
+- (void)logEventMessage:(id)messageOrPayload forChannelName:(NSString *)name;
 
 ///===========================
 /// @name Notification Logging
@@ -156,15 +170,3 @@ extern NSString * const TeslaChannelNotificationDictKey;
 
 @end
 
-#pragma mark -
-
-@protocol TeslaChannel <NSObject>
-
-/**
- 
- */
-- (void)log:(NSDictionary *)payload;
-
-@optional
-- (void)logEvent:(NSString *)eventMessage;
-@end

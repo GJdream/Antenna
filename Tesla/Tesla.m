@@ -22,6 +22,7 @@
 
 #import "Tesla.h"
 #import "TeslaSession.h"
+#import "TeslaHTTPChannel.h"
 #import <CoreData/CoreData.h>
 
 typedef NSDictionary *(^TeslaPayloadConstructionBlock)(NSNotification *notification);
@@ -48,56 +49,9 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   return [mutableComponents componentsJoinedByString:@" "];
 }
 
-static NSString * TemporaryDirectory() {
-  
-	static NSString *__tempPath = nil;
-	static dispatch_once_t onceToken;
-  
-	dispatch_once(&onceToken, ^{
-		__tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:TeslaFilesSubDirectoryName];
-
-    NSFileManager *manager = [[NSFileManager alloc] init];
-
-    NSError *error;
-
-		[manager createDirectoryAtPath:__tempPath
-		   withIntermediateDirectories:YES
-                        attributes:nil
-                             error:&error];
-    
-    if (error) {
-      NSLog(@"error setting the temp directory: %@", error);
-    }
-	});
-  
-	return __tempPath;
-}
-
-@interface TeslaStreamChannel : NSObject <TeslaChannel>
-- (id)initWithOutputStream:(NSOutputStream *)outputStream;
-@end
-
-@interface TeslaHTTPChannel : NSObject <TeslaChannel>
-- (id)initWithURL:(NSURL *)url
-           method:(NSString *)method;
-@end
-
-#ifdef _COREDATADEFINES_H
-
-@interface TeslaCoreDataChannel : NSObject <TeslaChannel>
-
-- (id)initWithEntity:(NSEntityDescription *)entity
-    messageAttribute:(NSAttributeDescription *)messageAttribute
-  timestampAttribute:(NSAttributeDescription *)timestampAttribute
-inManagedObjectContext:(NSManagedObjectContext *)context;
-
-@end
-
-#endif
-
 #pragma mark -
 
-@interface Tesla ()
+@interface Tesla()
 
 @property (readwrite, nonatomic, strong) NSMutableDictionary *channels;
 @property (readwrite, nonatomic, strong) NSMutableDictionary *defaultPayload;
@@ -148,7 +102,8 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   
   // Generate directory, if not already there
   NSError * error = nil;
-  [[NSFileManager defaultManager] createDirectoryAtPath:TemporaryDirectory()
+
+  [[NSFileManager defaultManager] createDirectoryAtPath:[Tesla logTempDirectory]
                             withIntermediateDirectories:YES
                                              attributes:nil
                                                   error:&error];
@@ -159,10 +114,35 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   return self;
 }
 
++ (NSString *)logTempDirectory {
+  
+	static NSString *__tempPath = nil;
+	static dispatch_once_t onceToken;
+  
+	dispatch_once(&onceToken, ^{
+		__tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent:TeslaFilesSubDirectoryName];
+    
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    
+    NSError *error;
+    
+		[manager createDirectoryAtPath:__tempPath
+		   withIntermediateDirectories:YES
+                        attributes:nil
+                             error:&error];
+    
+    if (error) {
+      NSLog(@"error setting the temp directory: %@", error);
+    }
+	});
+  
+	return __tempPath;
+}
+
 + (NSArray *)pendingFiles {
 
   NSError *error = nil;
-  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TemporaryDirectory()
+  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[Tesla logTempDirectory]
                                                                        error:&error];
   if (files == nil || ![files count] || error) {
     return nil;
@@ -189,45 +169,14 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   return __channels;
 }
 
-#pragma mark -
-
-- (void)addChannelWithFilePath:(NSString *)path forName:(NSString *)name {
-  [self addChannelWithOutputStream:[NSOutputStream outputStreamToFileAtPath:path append:YES] forName:name];
-}
-
-- (void)addChannelWithOutputStream:(NSOutputStream *)outputStream forName:(NSString *)name {
-
-  TeslaStreamChannel *channel = [[TeslaStreamChannel alloc] initWithOutputStream:outputStream];
-  
-  [self addChannel:channel forName:name];
-}
-
 - (void)addChannelWithURL:(NSURL *)URL
                    method:(NSString *)method
                   forName:(NSString *)name {
-
+  
   TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL method:method];
   
   [self addChannel:channel forName:name];
 }
-
-#ifdef _COREDATADEFINES_H
-
-- (void)addChannelWithEntity:(NSEntityDescription *)entity
-            messageAttribute:(NSAttributeDescription *)messageAttribute
-          timestampAttribute:(NSAttributeDescription *)timestampAttribute
-      inManagedObjectContext:(NSManagedObjectContext *)context
-                     forName:(NSString *)name {
-
-  TeslaCoreDataChannel *channel = [[TeslaCoreDataChannel alloc] initWithEntity:entity
-                                                              messageAttribute:messageAttribute
-                                                            timestampAttribute:timestampAttribute
-                                                        inManagedObjectContext:context];
-  
-  [self addChannel:channel forName:name];
-}
-
-#endif
 
 - (void)addChannel:(id <TeslaChannel>)channel forName:(NSString *)name {
 
@@ -281,34 +230,74 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   return channelObject;
 }
 
-#pragma mark -
+#pragma mark - Default log method
 
-- (void)log:(id)messageOrPayload {
+- (void)logEventMessage:(id)messageOrPayload {
 
+  [self.channels enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+    [[Tesla sharedLogger] logEventMessage:messageOrPayload forChannelName:key];
+  }];
+}
+
+- (void)logEventMessage:(id)messageOrPayload forChannelNames:(NSArray *)names {
+
+  NSAssert(messageOrPayload != nil, @"messageOrPayload is required");
+  NSAssert(names != nil, @"Log channels can't be nil");
+  
+  /**
+   * Iterate over channel names so that we just log to them
+   */
+  
+  [names enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *channelName, NSUInteger idx, BOOL *stop){
+    [[Tesla sharedLogger] logEventMessage:messageOrPayload forChannelName:channelName];
+  }];
+}
+
+- (void)logEventMessage:(id)messageOrPayload forChannelName:(NSString *)name {
+
+  NSAssert(messageOrPayload != nil, @"messageOrPayload is required");
+  NSAssert(name != nil, @"channel is required");
+  
+  id channelObj = self.channels[name];
+  
+  if (!channelObj) {
+    return;
+  }
+  
   NSMutableDictionary *mutablePayload = nil;
   
   if ([messageOrPayload isKindOfClass:[NSDictionary class]]) {
     
     mutablePayload = [messageOrPayload mutableCopy];
-
+    
   } else if (messageOrPayload) {
     
     mutablePayload = [NSMutableDictionary dictionaryWithObject:messageOrPayload forKey:@"message"];
   }
-
-    [self.defaultPayload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-
-      if (obj && ![mutablePayload valueForKey:key]) {
-        [mutablePayload setObject:obj forKey:key];
-      }
-    }];
   
-    [self.channels enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
-      [obj log:mutablePayload];
-    }];
+  [self.defaultPayload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    
+    if (obj && ![mutablePayload valueForKey:key]) {
+      [mutablePayload setObject:obj forKey:key];
+    }
+  }];
+
+  if ([channelObj conformsToProtocol:@protocol(TeslaChannel)]) {
+    
+    if ([channelObj respondsToSelector:@selector(log:)]) {
+      
+      [mutablePayload setObject:name forKey:@"channelName"];
+      
+      [channelObj log:mutablePayload];
+      
+    } else {
+      
+      NSLog(@"doesn't respond to protocol");
+    }
+  }
 }
 
-#pragma mark -
+#pragma mark - Application Lifecycle Notifications
 
 - (void)startLoggingApplicationLifecycleNotifications {
   
@@ -371,7 +360,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
       payload = block(notification);
     }
 
-    [strongSelf log:payload];
+    [strongSelf logEventMessage:payload];
   }];
 }
 
@@ -384,210 +373,3 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 }
 
 @end
-
-#pragma mark -
-
-@interface TeslaStreamChannel ()
-
-@property (readwrite, nonatomic, strong) NSOutputStream *outputStream;
-
-@end
-
-@implementation TeslaStreamChannel
-
-@synthesize outputStream = _outputStream;
-
-- (id)initWithOutputStream:(NSOutputStream *)outputStream {
-
-  self = [super init];
-  
-  if (!self) {
-    return nil;
-  }
-
-  self.outputStream = outputStream;
-  
-  [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-  [self.outputStream open];
-  
-  return self;
-}
-
-#pragma mark - TeslaChannel
-
-- (void)log:(NSDictionary *)payload {
-
-  NSData *data = [TeslaLogLineFromPayload(payload) dataUsingEncoding:NSUTF8StringEncoding];
-  
-  [self.outputStream write:[data bytes] maxLength:[data length]];
-}
-
-@end
-
-#pragma mark -
-
-@interface TeslaHTTPChannel ()<NSURLSessionDelegate>
-
-@property (readwrite, nonatomic, copy) NSString *method;
-@property (nonatomic, strong) TeslaSession *backGroundSession;
-
-@end
-
-@implementation TeslaHTTPChannel
-
-- (id)initWithURL:(NSURL *)url method:(NSString *)method {
-
-  self = [super init];
-  
-  if (!self) {
-    return nil;
-  }
-  // Register for background notification
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(appDidEnterBackground)
-                                               name:UIApplicationDidEnterBackgroundNotification
-                                             object:nil];
-
-  self.backGroundSession = [TeslaSession backgroundSessionWithDelegate:self];
-
-  return self;
-}
-
-#pragma mark - TeslaChannel
-
-// Write an event to file in tmp/tesla directory
-- (void)logEvent:(NSString *)eventMessage {
-  
-  // Write file to tmp dir
-  NSError *error;
-  NSString *date = [NSDateFormatter localizedStringFromDate:[NSDate date]
-                                                  dateStyle:NSDateFormatterFullStyle
-                                                  timeStyle:NSDateFormatterFullStyle];
-  
-  NSString *fileName = [NSString stringWithFormat:@"log_%@.txt", date];
-  NSString *filePath = [TemporaryDirectory() stringByAppendingPathComponent:fileName];
-  
-  BOOL success = [eventMessage writeToFile:filePath
-                                atomically:YES
-                                  encoding:NSUTF8StringEncoding
-                                     error:&error];
-  if(error) {
-    NSLog(@"Error writing to file %@ %@",filePath,error);
-  } else if (!success) {
-    NSLog(@"Couldn't write to file");
-  } else {
-    NSLog(@"Logged %@ (%@)",eventMessage,filePath);
-  }
-}
-
-- (void)log:(NSDictionary *)payload {
-  
-  /**
-   * NSDictionary does have an instance method for writing to file, but does so 
-   * via plist. Calling `description` method will return a string to write out
-   * via txt file.
-   */
-
-  [self logEvent:payload.description];
-}
-
-#pragma mark - Background Notification
-
-- (void)appDidEnterBackground {
-
-  NSLog(@"App entered background");
-  
-  // Check for log files to send
-  NSArray *pendingFiles = [Tesla pendingFiles];
-
-  if ([pendingFiles count]) {
-    
-    NSLog(@"Sending files...");
-    
-    [self.backGroundSession sendFilesInBackground:pendingFiles];
-  }
-}
-
-#pragma mark - NSURLSession* Delegate Methods
-
-/**
- * These _might_ not be needed for our purposes
- */
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task needNewBodyStream:(void (^)(NSInputStream *bodyStream))completionHandler {
-  NSLog(@"session: %@ task: %@", session, task);
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
-    totalBytesSent:(int64_t)totalBytesSent
-totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-  NSLog(@"session only: %@", session);
-}
-
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didCompleteWithError:(NSError *)error {
-  NSLog(@"did finish");
-}
-
-@end
-
-#ifdef _COREDATADEFINES_H
-@interface TeslaCoreDataChannel ()
-
-@property (readwrite, nonatomic, strong) NSEntityDescription *entity;
-@property (readwrite, nonatomic, strong) NSManagedObjectContext *context;
-@property (readwrite, nonatomic, strong) NSAttributeDescription *messageAttribute;
-@property (readwrite, nonatomic, strong) NSAttributeDescription *timestampAttribute;
-
-@end
-
-@implementation TeslaCoreDataChannel
-
-@synthesize entity             = _entity;
-@synthesize context            = _context;
-@synthesize messageAttribute   = _messageAttribute;
-@synthesize timestampAttribute = _timestampAttribute;
-
-- (id)initWithEntity:(NSEntityDescription *)entity
-    messageAttribute:(NSAttributeDescription *)messageAttribute
-  timestampAttribute:(NSAttributeDescription *)timestampAttribute
-inManagedObjectContext:(NSManagedObjectContext *)context {
-
-  self = [super init];
-  
-  if (!self) {
-    return nil;
-  }
-
-  self.entity             = entity;
-  self.context            = context;
-  self.messageAttribute   = messageAttribute;
-  self.timestampAttribute = timestampAttribute;
-
-  return self;
-}
-
-#pragma mark - TeslaChannel
-
-- (void)log:(NSDictionary *)payload {
-
-  [self.context performBlock:^{
-
-    NSManagedObjectContext *entry = [NSEntityDescription insertNewObjectForEntityForName:self.entity.name inManagedObjectContext:self.context];
-    
-    [entry setValue:TeslaLogLineFromPayload(payload) forKey:self.messageAttribute.name];
-    [entry setValue:[NSDate date] forKey:self.timestampAttribute.name];
-
-    NSError *error = nil;
-
-    if (![self.context save:&error]) {
-      NSLog(@"Logging Error: %@", error);
-    }
-  }];
-}
-
-@end
-
-#endif
