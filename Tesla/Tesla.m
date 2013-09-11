@@ -33,6 +33,7 @@ static dispatch_queue_t _channelsThreadQueue;
 NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotification";
 NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
+NSString * const TeslaFilesSubDirectoryName = @"tesla";
 
 static NSString * const TeslaLogFilePrefix = @"log_";
 
@@ -144,9 +145,35 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 
   self.notificationCenter = [NSNotificationCenter defaultCenter];
   self.operationQueue     = [[NSOperationQueue alloc] init];
+  
+  // Generate directory, if not already there
+  NSError * error = nil;
+  [[NSFileManager defaultManager] createDirectoryAtPath:[Tesla teslaLogDirectory]
+                            withIntermediateDirectories:YES
+                                             attributes:nil
+                                                  error:&error];
+  if (error != nil) {
+    NSLog(@"Error creating tmp log directory: %@", error);
+  }
 
+  
   return self;
 }
+
++ (NSString*)teslaLogDirectory {
+  return [NSTemporaryDirectory() stringByAppendingPathComponent:TeslaFilesSubDirectoryName];
+}
+
++ (NSArray *)pendingFiles {
+  NSError * error = nil;
+  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[Tesla teslaLogDirectory]
+                                                                       error:&error];
+  if (files == nil || ![files count] || error) {
+    return nil;
+  }
+  return files;
+}
+
 
 - (void)setChannels:(NSMutableDictionary *)channels {
   
@@ -406,6 +433,7 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
 @interface TeslaHTTPChannel ()<NSURLSessionDelegate>
 
 @property (readwrite, nonatomic, copy) NSString *method;
+@property (nonatomic, strong) TeslaSession *backGroundSession;
 
 @end
 
@@ -418,11 +446,42 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
   if (!self) {
     return nil;
   }
+  // Register for background notification
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(appDidEnterBackground)
+                                               name:UIApplicationDidEnterBackgroundNotification
+                                             object:nil];
+  self.backGroundSession = [TeslaSession backgroundSessionWithDelegate:self];
 
   return self;
 }
 
 #pragma mark - TeslaChannel
+
+// Write an event to file in tmp/tesla directory
+- (void)logEvent:(NSString *)eventMessage {
+  
+  // Write file to tmp dir
+  NSError *error;
+  NSString *date = [NSDateFormatter localizedStringFromDate:[NSDate date]
+                                                        dateStyle:NSDateFormatterFullStyle
+                                                        timeStyle:NSDateFormatterFullStyle];
+  
+  NSString *fileName = [NSString stringWithFormat:@"log_%@.txt",date];
+  NSString *filePath = [[Tesla teslaLogDirectory] stringByAppendingPathComponent:fileName];
+  
+  BOOL success = [eventMessage writeToFile:filePath
+                                atomically:YES
+                                  encoding:NSUTF8StringEncoding
+                                     error:&error];
+  if(error) {
+    NSLog(@"Error writing to file %@ %@",filePath,error);
+  } else if (!success) {
+    NSLog(@"Couldn't write to file");
+  } else {
+    NSLog(@"Logged %@ (%@)",eventMessage,filePath);
+  }
+}
 
 - (void)log:(NSDictionary *)payload {
 
@@ -443,6 +502,20 @@ inManagedObjectContext:(NSManagedObjectContext *)context;
     NSLog(@"There was an error writing the payload: %@ to the file: %@ [%@]", payload, logFile, writeError);
   }
 }
+
+#pragma mark - Background Notification
+
+- (void)appDidEnterBackground {
+  NSLog(@"App entered background");
+  
+  // Check for log files to send
+  NSArray * pendingFiles = [Tesla pendingFiles];
+  if([pendingFiles count]) {
+    NSLog(@"Sending files...");
+    [self.backGroundSession sendFilesInBackground:pendingFiles];
+  }
+}
+
 
 #pragma mark - NSURLSession* Delegate Methods
 

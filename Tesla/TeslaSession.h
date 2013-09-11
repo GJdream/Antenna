@@ -15,4 +15,7 @@
 + (instancetype)sharedSessionWithDelegate:(id <NSURLSessionDelegate>)delegate
                                     queue:(NSOperationQueue *)aQueue;
 
++ (instancetype)backgroundSessionWithDelegate:(id <NSURLSessionDelegate>)delegate;
+
+- (void)sendFilesInBackground:(NSArray *)files;
 @end

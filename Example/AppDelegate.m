@@ -43,7 +43,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    [[Tesla sharedLogger] removeChannelForName:@"defaultLog"];
+   // [[Tesla sharedLogger] removeChannelForName:@"defaultLog"];
 }
 
 @end
