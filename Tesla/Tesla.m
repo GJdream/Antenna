@@ -131,13 +131,20 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 + (NSArray *)pendingFiles {
 
   NSError *error = nil;
-  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[Tesla logTempDirectory]
+  NSString * dirPath = [Tesla logTempDirectory];
+  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath
                                                                        error:&error];
   if (files == nil || ![files count] || error) {
     return nil;
   }
   
-  return files;
+  NSMutableArray * fullFilePaths = [NSMutableArray array];
+  for (NSString * name in files) {
+    if([name rangeOfString:TeslaLogFilePrefix].location == NSNotFound) continue;
+    [fullFilePaths addObject:[dirPath stringByAppendingPathComponent:name]];
+  }
+  
+  return fullFilePaths;
 }
 
 - (void)setChannels:(NSMutableDictionary *)channels {

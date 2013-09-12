@@ -24,15 +24,18 @@
 #import "ViewController.h"
 #import "Tesla.h"
 
+
+#define TeslaDefaultRoute @"http://localhost:5000/file"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"LOG" forName:@"defaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"defaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"secondDefaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000/items"] method:@"POST" forName:@"finalDefaultLog"];
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"LOG" forName:@"defaultLog"];
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"defaultLog"];
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"secondDefaultLog"];
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"finalDefaultLog"];
     [[Tesla sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Tesla sharedLogger] startLoggingNotificationName:TeslaExampleNotification];
 
