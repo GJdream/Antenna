@@ -25,8 +25,6 @@
 #import "TeslaHTTPChannel.h"
 #import <CoreData/CoreData.h>
 
-typedef NSDictionary *(^TeslaPayloadConstructionBlock)(NSNotification *notification);
-
 static char const *channelsThreadQueueName = "com.theforce.channels.queue";
 
 static dispatch_queue_t _channelsThreadQueue;
