@@ -67,25 +67,25 @@ NSString * const TeslaExampleNotification = @"TeslaExampleNotification";
    * Logs _just_ for secondDefaultLog channel
    */
   
-  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for secondDefaultLog"} forChannelName:@"secondDefaultLog"];
+  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for secondDefaultLog"} forChannelName:@"secondDefaultLog"];
   
   /**
    * This will log to everything
    */
 
-  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for everything"}];
+  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for everything"}];
   
   /**
    * This should not log anything because the channel doesn't exist
    */
 
-  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for everything"} forChannelName:@"doesnotExist"];
+  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for everything"} forChannelName:@"doesnotExist"];
   
   /**
    * This will log explicitly to channels
    */
   
-  [[Tesla sharedLogger] logEventMessage:@{@"testKey": @"this is a test that will log for explicitly all three"} forChannelNames:@[@"defaultLog", @"secondDefaultLog", @"finalDefaultLog"]];
+  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for explicitly all three"} forChannelNames:@[@"defaultLog", @"secondDefaultLog", @"finalDefaultLog"]];
   
 }
 
