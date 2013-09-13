@@ -109,11 +109,39 @@
   }
 }
 
-#pragma mark - NSURLSession* Delegate Methods
+#pragma mark - Task Cleanup Ops
+
 
 /**
- * These _might_ not be needed for our purposes
+ * Delete finished tasks
  */
+
+- (void)performTaskCleanup:(NSURLSessionTask *)task {
+  
+  if(!task) return;
+  
+  NSHTTPURLResponse * resp = (NSHTTPURLResponse *)task.response;
+  NSLog(@"response status: %d",[resp statusCode]);
+  
+  if([resp statusCode] != 201) {
+    // Leave in queue if bad insert?
+    return;
+  }
+  
+  NSFileManager * fm = [NSFileManager defaultManager];
+  NSString      * path = task.taskDescription;
+  NSURL         * url = [NSURL fileURLWithPath:path];
+  NSError       * error = nil;
+  
+  if([fm fileExistsAtPath:[url path]]) {
+    [fm removeItemAtPath:path error:&error];
+    if (error) {
+      NSLog(@"Error removing file (%@)",path);
+    }
+  }
+}
+
+#pragma mark - NSURLSession* Delegate Methods
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task needNewBodyStream:(void (^)(NSInputStream *bodyStream))completionHandler {
   NSLog(@"session: %@ task: %@", session, task);
@@ -123,13 +151,14 @@
    didSendBodyData:(int64_t)bytesSent
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-  NSLog(@"session only: %@", session);
+  NSLog(@"session didSendBodyData: %qi (of %qi)", bytesSent,totalBytesExpectedToSend);
 }
 
 - (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
-  NSLog(@"did finish");
+  NSLog(@"did finish %@",[task.taskDescription lastPathComponent]);
+  [self performTaskCleanup:task];
 }
 
 @end

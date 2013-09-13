@@ -116,6 +116,7 @@
     
     NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
                                                                     fromFile:[NSURL fileURLWithPath:path]];
+    uploadTask.taskDescription = path;
     [uploadTask resume];
   }];
 }
