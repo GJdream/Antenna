@@ -25,7 +25,7 @@
 #import "Tesla.h"
 
 
-#define TeslaDefaultRoute @"http://localhost:5000/file"
+#define TeslaDefaultRoute @"http://localhost:5000/log"
 
 @implementation AppDelegate
 
