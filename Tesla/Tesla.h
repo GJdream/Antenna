@@ -92,6 +92,13 @@ extern NSString * const TeslaFilesSubDirectoryName;
 
 @property (nonatomic, copy) NSString *apiKey;
 
+
+/**
+ * Salesforce user id. This should be reset if the logged in user changes.
+ */
+
+@property (nonatomic, copy) NSString *userId;
+
 /**
  * Singleton instance of Tesla class
  * @return Tesla

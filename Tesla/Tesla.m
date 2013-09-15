@@ -33,6 +33,7 @@ NSString * const TeslaChannelAddedNotification   = @"TeslaChannelAddedNotificati
 NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotification";
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
 NSString * const TeslaFilesSubDirectoryName      = @"tesla";
+NSString * const TeslaDefaultUserIdKeyName       = @"sfid";
 
 static NSString * const TeslaLogFilePrefix = @"log_";
 
@@ -163,6 +164,16 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   });
   
   return __channels;
+}
+
+- (void)setUserId:(NSString *)userId {
+  _userId = userId;
+  
+  if(!userId) {
+    [self.defaultPayload removeObjectForKey:TeslaDefaultUserIdKeyName];
+  } else {
+    [self.defaultPayload setValue:userId forKey:TeslaDefaultUserIdKeyName];
+  }
 }
 
 - (void)addChannelWithURL:(NSURL *)URL
