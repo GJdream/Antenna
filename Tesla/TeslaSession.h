@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, copy) NSString *urlString;
+@property (nonatomic, copy) NSString *apiKey; // sessions using api key by inserting it in the headers
 
 + (instancetype)sharedSessionWithDelegate:(id <NSURLSessionDelegate>)delegate
                                     queue:(NSOperationQueue *)aQueue;

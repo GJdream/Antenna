@@ -34,6 +34,7 @@
   self.backGroundSession = [TeslaSession backgroundSessionWithDelegate:self];
 
   self.backGroundSession.urlString = [url.absoluteString copy];
+  self.backGroundSession.apiKey = [[Tesla sharedLogger] apiKey];
   
   return self;
 }

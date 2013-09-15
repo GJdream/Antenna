@@ -106,6 +106,9 @@
    * Want to test out a little concurrency methodology.
    */
   
+  BOOL goodSetup = [self.apiKey length] && [self.urlString length];
+  NSAssert(goodSetup, @"Error: TeslaSession must have an api key & url string!");
+  
   [files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *path, NSUInteger idx, BOOL *stop){
   
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlString]];
@@ -113,6 +116,7 @@
     request.HTTPMethod = @"POST";
 
     [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:self.apiKey forHTTPHeaderField:@"api_key"];
     
     NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
                                                                     fromFile:[NSURL fileURLWithPath:path]];

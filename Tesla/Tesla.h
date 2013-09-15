@@ -87,6 +87,12 @@ extern NSString * const TeslaFilesSubDirectoryName;
 @property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;
 
 /**
+ * Api Key used to 'authenticate' a Tesla instance to a backend
+ */
+
+@property (nonatomic, copy) NSString *apiKey;
+
+/**
  * Singleton instance of Tesla class
  * @return Tesla
  */

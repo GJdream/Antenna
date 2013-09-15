@@ -32,6 +32,9 @@
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  
+    [[Tesla sharedLogger] setApiKey:@"abcdefg0123456789"];
+  
     [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"LOG" forName:@"defaultLog"];
     [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"defaultLog"];
     [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"secondDefaultLog"];
