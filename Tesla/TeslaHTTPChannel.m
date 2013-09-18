@@ -9,16 +9,16 @@
 #import "TeslaHTTPChannel.h"
 #import "TeslaSession.h"
 
+
 @interface TeslaHTTPChannel()<NSURLSessionDelegate>
 
-@property (readwrite, nonatomic, copy) NSString *method;
 @property (nonatomic, strong) TeslaSession *backGroundSession;
 
 @end
 
 @implementation TeslaHTTPChannel
 
-- (id)initWithURL:(NSURL *)url method:(NSString *)method {
+- (id)initWithURL:(NSURL *)url {
   
   self = [super init];
   

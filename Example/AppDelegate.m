@@ -33,16 +33,21 @@
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   
-    [[Tesla sharedLogger] setApiKey:@"abcdefg0123456789"];
-    [[Tesla sharedLogger] setUserId:@"A02300000032324"];
-
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"LOG" forName:@"defaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"defaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"secondDefaultLog"];
-    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] method:@"POST" forName:@"finalDefaultLog"];
+    // Essentials
+    [[Tesla sharedLogger] setApiKey:@"eaQPYeZq7shkl4IajNdkkjIlS"]; //generated via admin console
+    [[Tesla sharedLogger] setDefaultURL:TeslaDefaultRoute];        //url to which events are POSTed
+  
+    // Optional but key for real-world use
+    [[Tesla sharedLogger] setUserId:@"A0230z00000323w24"];
+  
+    // Optional
     [[Tesla sharedLogger] startLoggingApplicationLifecycleNotifications];
     [[Tesla sharedLogger] startLoggingNotificationName:TeslaExampleNotification];
-
+  
+    // Can still use the verbose way, not really necessary here
+    [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:TeslaDefaultRoute] forName:@"defaultLog"];
+  
+  
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     self.window.rootViewController = self.viewController;

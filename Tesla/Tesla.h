@@ -99,6 +99,13 @@ extern NSString * const TeslaFilesSubDirectoryName;
 
 @property (nonatomic, copy) NSString *userId;
 
+
+/**
+ * Default URL to which all logged events will be POSTed
+ */
+
+@property (nonatomic, copy) NSString *defaultURL;
+
 /**
  * Singleton instance of Tesla class
  * @return Tesla
@@ -166,11 +173,22 @@ extern NSString * const TeslaFilesSubDirectoryName;
  * with a webservices, but could be file url.
  *
  * @param nsurl url to resource
- * @param string HTTP method to use. For example PUT or POST
  * @param string name of channel to "write" to
  */
 
-- (void)addChannelWithURL:(NSURL *)URL method:(NSString *)method forName:(NSString *)name;
+- (void)addChannelWithURL:(NSURL *)URL forName:(NSString *)name;
+
+
+/**
+ * This is the default log method for the shared Tesla instance.
+ *
+ * @param id NSDictionary or string that should be logged
+ * @param string eventType sets channel parameter in the default payload. This
+ * should be set if you want to search logs for a certain type of event
+ */
+
+- (void)logEventMessage:(id)messageOrPayload forEventType:(NSString*)eventType;
+
 
 /**
  * This is the _main_ log method for Tesla. It check and see

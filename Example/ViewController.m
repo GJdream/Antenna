@@ -57,36 +57,13 @@ NSString * const TeslaExampleNotification = @"TeslaExampleNotification";
 
 // Log to file for later send when app backgrounded
 - (IBAction)logEventPressed:(id)sender {
+  
+  [[Tesla sharedLogger] logEventMessage:@"test event" forEventType:@"buttonPress"];
+}
 
-  /**
-   * @todo
-   * move all of this to unit tests
-   */
-  
-  /**
-   * Logs _just_ for secondDefaultLog channel
-   */
-  
-  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for secondDefaultLog"} forChannelName:@"secondDefaultLog"];
-  
-  /**
-   * This will log to everything
-   */
 
-  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for everything"}];
-  
-  /**
-   * This should not log anything because the channel doesn't exist
-   */
-
-  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for everything"} forChannelName:@"doesnotExist"];
-  
-  /**
-   * This will log explicitly to channels
-   */
-  
-  [[Tesla sharedLogger] logEventMessage:@{@"message": @"this is a test that will log for explicitly all three"} forChannelNames:@[@"defaultLog", @"secondDefaultLog", @"finalDefaultLog"]];
-  
+- (IBAction)generateException:(id)sender {
+  [self performSelector:@selector(missingMethod) withObject:nil afterDelay:0];
 }
 
 @end

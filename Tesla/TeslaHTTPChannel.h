@@ -11,6 +11,6 @@
 
 @interface TeslaHTTPChannel : NSObject <TeslaChannel>
 
-- (id)initWithURL:(NSURL *)url method:(NSString *)method;
+- (id)initWithURL:(NSURL *)url;
 
 @end
