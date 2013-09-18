@@ -35,6 +35,8 @@ NSString * const TeslaChannelNotificationDictKey = @"channelName";
 NSString * const TeslaFilesSubDirectoryName      = @"tesla";
 NSString * const TeslaDefaultUserIdKeyName       = @"sfid";
 
+NSString * const TeslaDefaultChannel             = @"TeslaDefaultChannel";
+
 static NSString * const TeslaLogFilePrefix = @"log_";
 
 static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
@@ -62,6 +64,8 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 
 @synthesize channels = _channels;
 
+void exceptHandler(NSException *exception);
+
 + (void)initialize {
   _channelsThreadQueue = dispatch_queue_create(channelsThreadQueueName, DISPATCH_QUEUE_CONCURRENT);
 }
@@ -85,7 +89,10 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   if (!self) {
     return nil;
   }
-
+  
+  // Install exception handler
+  NSSetUncaughtExceptionHandler(&exceptHandler);
+    
   self.channels       = [NSMutableDictionary new];
   self.defaultPayload = [NSMutableDictionary dictionary];
 
@@ -176,11 +183,13 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
   }
 }
 
+
 - (void)addChannelWithURL:(NSURL *)URL
-                   method:(NSString *)method
                   forName:(NSString *)name {
   
-  TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL method:method];
+  if(!URL) return;
+  
+  TeslaHTTPChannel *channel = [[TeslaHTTPChannel alloc] initWithURL:URL];
   
   [self addChannel:channel forName:name];
 }
@@ -341,8 +350,8 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
         [mutablePayload setObject:obj forKey:key];
       }];
     }
-
-    [mutablePayload setObject:name forKey:@"notification"];
+    
+    [mutablePayload setObject:name forKey:@"message"];
 
     return mutablePayload;
   }];
@@ -367,7 +376,7 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
       payload = block(notification);
     }
 
-    [strongSelf logEventMessage:payload];
+    [strongSelf logEventMessage:payload forEventType:@"Notification"];
   }];
 }
 
@@ -377,6 +386,81 @@ static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 
 - (void)stopLoggingAllNotifications {
   [self.notificationCenter removeObserver:self];
+}
+
+
+#pragma mark - Default logging
+
+- (void)logEventMessage:(id)messageOrPayload forEventType:(NSString*)eventType {
+  
+  NSAssert(messageOrPayload != nil, @"messageOrPayload is required");
+  NSAssert(eventType != nil, @"eventType is required");
+  
+  // Only use the default channel channel
+  id defaultTeslaChannel = [self channelForName:TeslaDefaultChannel];
+  
+  if (!defaultTeslaChannel) {
+    return;
+  }
+  
+  NSMutableDictionary *mutablePayload = nil;
+  
+  if ([messageOrPayload isKindOfClass:[NSDictionary class]]) {
+    
+    mutablePayload = [messageOrPayload mutableCopy];
+    
+  } else if (messageOrPayload) {
+    
+    mutablePayload = [NSMutableDictionary dictionaryWithObject:messageOrPayload forKey:@"message"];
+  }
+  
+  [self.defaultPayload enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    
+    if (obj && ![mutablePayload valueForKey:key]) {
+      [mutablePayload setObject:obj forKey:key];
+    }
+  }];
+  
+  if ([defaultTeslaChannel conformsToProtocol:@protocol(TeslaChannel)]) {
+    
+    if ([defaultTeslaChannel respondsToSelector:@selector(log:)]) {
+      
+      [mutablePayload setObject:eventType forKey:@"channelName"]; //should probably make a new key for this but it still makes sense as is
+      
+      [defaultTeslaChannel log:mutablePayload];
+      
+    } else {
+      NSLog(@"doesn't respond to protocol");
+    }
+  }
+}
+
+
+- (void)setDefaultURL:(NSString *)defaultURL {
+  
+  _defaultURL = defaultURL;
+  
+  if([self channelExists:TeslaDefaultChannel]) {
+    [self removeChannelForName:TeslaDefaultChannel];
+  }
+  
+  [self addChannelWithURL:[NSURL URLWithString:self.defaultURL] forName:TeslaDefaultChannel];
+}
+
+
+#pragma mark - Exceptions
+
+void exceptHandler(NSException *exception) {
+  
+	NSString *errorMessage = [NSString stringWithFormat:
+                        @"App Exception: %@\n"
+                        "Stack trace: %@",
+                        [exception description],
+                        [exception.callStackSymbols description]];
+  
+	//printf("%s", [errorMessage UTF8String]);
+  
+  [[Tesla sharedLogger] logEventMessage:errorMessage forEventType:@"Exception"];
 }
 
 @end
