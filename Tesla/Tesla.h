@@ -28,6 +28,7 @@ extern NSString * const TeslaChannelAddedNotification;
 extern NSString * const TeslaChannelRemovedNotification;
 extern NSString * const TeslaChannelNotificationDictKey;
 extern NSString * const TeslaFilesSubDirectoryName;
+extern NSString * const TeslaEventTypeException;
 
 #pragma mark - Tesla Channel Protocol
 
@@ -38,8 +39,6 @@ extern NSString * const TeslaFilesSubDirectoryName;
  * logEvent:
  *
  * @see logEvent:
- * @todo
- * Feels redudant to have both of these messages. Should only be 1?
  */
 
 - (void)log:(NSDictionary *)payload;
