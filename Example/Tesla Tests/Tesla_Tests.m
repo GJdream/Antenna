@@ -48,8 +48,7 @@ static NSString * const TeslaTestsExampleNotification = @"TeslaTestsExampleNotif
 - (void)test_000_Successfully_Add_Channel {
   
     [[Tesla sharedLogger] addChannelWithURL:[NSURL URLWithString:@"http://localhost:5000"]
-                                       method:@"LOG"
-                                      forName:@"defaultTestLog"];
+                                    forName:@"defaultTestLog"];
 }
 
 - (void)test_001_Successfully_Remove_Channel {
