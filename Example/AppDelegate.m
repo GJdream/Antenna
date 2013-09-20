@@ -32,9 +32,8 @@
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  
     // Essentials
-    [[Tesla sharedLogger] setApiKey:@"eaQPYeZq7shkl4IajNdkkjIlS"]; //generated via admin console
+    [[Tesla sharedLogger] setApiKey:<#generated via admin console#>];
     [[Tesla sharedLogger] setDefaultURL:TeslaDefaultRoute];        //url to which events are POSTed
   
     // Optional but key for real-world use
