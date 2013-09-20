@@ -34,7 +34,7 @@ NSString * const TeslaChannelRemovedNotification = @"TeslaChannelRemovedNotifica
 NSString * const TeslaChannelNotificationDictKey = @"channelName";
 NSString * const TeslaFilesSubDirectoryName      = @"tesla";
 NSString * const TeslaDefaultUserIdKeyName       = @"sfid";
-
+NSString * const TeslaEventTypeException         = @"Exception";
 NSString * const TeslaDefaultChannel             = @"TeslaDefaultChannel";
 
 static NSString * const TeslaLogFilePrefix = @"log_";
@@ -138,19 +138,22 @@ void exceptHandler(NSException *exception);
 
 + (NSArray *)pendingFiles {
 
-  NSError *error = nil;
-  NSString * dirPath = [Tesla logTempDirectory];
-  NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath
-                                                                       error:&error];
+  NSError *error    = nil;
+  NSString *dirPath = [Tesla logTempDirectory];
+  NSArray *files    = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dirPath
+                                                                          error:&error];
   if (files == nil || ![files count] || error) {
     return nil;
   }
   
-  NSMutableArray * fullFilePaths = [NSMutableArray array];
-  for (NSString * name in files) {
-    if([name rangeOfString:TeslaLogFilePrefix].location == NSNotFound) continue;
-    [fullFilePaths addObject:[dirPath stringByAppendingPathComponent:name]];
-  }
+  __block NSMutableArray *fullFilePaths = [NSMutableArray array];
+
+  [files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *name, NSUInteger idx, BOOL *stop){
+
+    if ([name rangeOfString:TeslaLogFilePrefix].location != NSNotFound) {
+      [fullFilePaths addObject:[dirPath stringByAppendingPathComponent:name]];
+    }
+  }];
   
   return fullFilePaths;
 }
@@ -174,6 +177,7 @@ void exceptHandler(NSException *exception);
 }
 
 - (void)setUserId:(NSString *)userId {
+
   _userId = userId;
   
   if(!userId) {
@@ -199,6 +203,7 @@ void exceptHandler(NSException *exception);
     /**
      * Has this channel already been added?
      */
+
     if ([self channelExists:name]) {
       return;
     }
@@ -217,6 +222,7 @@ void exceptHandler(NSException *exception);
     /**
      * Has this channel already been removed?
      */
+
     if (![self channelExists:name]) {
       return;
     }
@@ -460,7 +466,7 @@ void exceptHandler(NSException *exception) {
   
 	//printf("%s", [errorMessage UTF8String]);
   
-  [[Tesla sharedLogger] logEventMessage:errorMessage forEventType:@"Exception"];
+  [[Tesla sharedLogger] logEventMessage:errorMessage forEventType:TeslaEventTypeException];
 }
 
 @end
