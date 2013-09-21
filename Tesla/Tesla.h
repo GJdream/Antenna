@@ -29,6 +29,7 @@ extern NSString * const TeslaChannelRemovedNotification;
 extern NSString * const TeslaChannelNotificationDictKey;
 extern NSString * const TeslaFilesSubDirectoryName;
 extern NSString * const TeslaEventTypeException;
+extern NSString * const TeslaLogFilePrefix;
 
 #pragma mark - Tesla Channel Protocol
 
