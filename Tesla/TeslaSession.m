@@ -12,7 +12,7 @@
 @interface TeslaSession()
 
 @property (nonatomic, weak) NSOperationQueue *sessionQueue;
-@property (nonatomic, weak) id <NSURLSessionDelegate> delegate;
+@property (nonatomic, strong) id <NSURLSessionDelegate> delegate;
 
 @end
 
@@ -107,45 +107,26 @@
 
   NSAssert(goodSetup, @"Error: TeslaSession must have an api key & url string!");
   
-  for (NSString *path in files) {
-    
-    if ([path rangeOfString:TeslaLogFilePrefix].location == NSNotFound && path != nil) {
-      continue;
-    }
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlString]];
-    
-    request.HTTPMethod = @"POST";
-    
-    [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:self.apiKey forHTTPHeaderField:@"api_key"];
-    
-    NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
-                                                                    fromFile:[NSURL fileURLWithPath:path]];
-    uploadTask.taskDescription = path;
-    [uploadTask resume];
-  }
-  
   /**
    * Below code throws random expections. Not sure why.
    */
 
-//  [files enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop){
-//  
-//    if ([path rangeOfString:TeslaLogFilePrefix].location != NSNotFound && path) {
-//      
-//      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlString]];
-//      
-//      request.HTTPMethod = @"POST";
-//      
-//      [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
-//      [request setValue:self.apiKey forHTTPHeaderField:@"api_key"];
-//      
-//      NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
-//                                                                      fromFile:[NSURL fileURLWithPath:path]];
-//      uploadTask.taskDescription = path;
-//      [uploadTask resume];
-//    }
-//  }];
+  [files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSString *path, NSUInteger idx, BOOL *stop){
+  
+    if ([path rangeOfString:TeslaLogFilePrefix].location != NSNotFound && path) {
+      
+      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.urlString]];
+      
+      request.HTTPMethod = @"POST";
+      
+      [request setValue:@"application/octet-stream" forHTTPHeaderField:@"Content-Type"];
+      [request setValue:self.apiKey forHTTPHeaderField:@"api_key"];
+      
+      NSURLSessionUploadTask *uploadTask = [self.session uploadTaskWithRequest:request
+                                                                      fromFile:[NSURL fileURLWithPath:path]];
+      uploadTask.taskDescription = path;
+      [uploadTask resume];
+    }
+  }];
 }
 @end
