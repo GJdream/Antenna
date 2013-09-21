@@ -36,8 +36,7 @@ NSString * const TeslaFilesSubDirectoryName      = @"tesla";
 NSString * const TeslaDefaultUserIdKeyName       = @"sfid";
 NSString * const TeslaEventTypeException         = @"Exception";
 NSString * const TeslaDefaultChannel             = @"TeslaDefaultChannel";
-
-static NSString * const TeslaLogFilePrefix = @"log_";
+NSString * const TeslaLogFilePrefix              = @"log_";
 
 static NSString * TeslaLogLineFromPayload(NSDictionary *payload) {
 
